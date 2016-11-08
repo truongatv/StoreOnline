@@ -42,6 +42,22 @@ int main(){
 		do{
 			menu_login(&menu_choise);
 		} while(menu_choise < 1 || menu_choise >3);
+		if(menu_choise == 3){
+			bytes_sent = send(client_sock,"999",4,0);
+			if(bytes_sent == -1){
+				error_send();
+			}
+			close(client_sock);
+			return 0;
+		}
+		while(getchar()!='\n');
+		char* userid_sent = (char*) malloc(sizeof(char) * 50);
+		do{
+			printf("\nInsert userid:");
+			memset(buff,'\0',(strlen(buff)+1));
+			gets(buff);
+		}while((int)strlen(buff) == 0);
+		strcpy(userid_sent,&buff[0]);
 		switch(menu_choise){
 			case 1:{
 				//login
@@ -63,14 +79,6 @@ int main(){
 				}
 				break;
 			}
-			case 3:{
-				bytes_sent = send(client_sock,"999",4,0);
-				if(bytes_sent == -1){
-					error_send();
-				}
-				close(client_sock);
-				return 0;
-			}
 		}
 		bytes_received = recv(client_sock,buff,1024,0);
 		if(bytes_received == -1){
@@ -78,17 +86,10 @@ int main(){
 			close(client_sock);
 			return 0;
 		}
-		while(getchar()!='\n');
-		char* userid_sent = (char*) malloc(sizeof(char) * 50);
-		do{
-			printf("\nInsert userid:");
-			memset(buff,'\0',(strlen(buff)+1));
-			gets(buff);
-		}while((int)strlen(buff) == 0);
-		strcpy(userid_sent,&buff[0]);
+		
 		// send userid
 		
-		bytes_sent = send(client_sock,buff,strlen(buff),0);
+		bytes_sent = send(client_sock,userid_sent,strlen(userid_sent),0);
 		if(bytes_sent == -1){
 			error_send();
 			close(client_sock);
@@ -120,15 +121,7 @@ int main(){
 						int retry_times =0;
 						do{	
 							retry_times++;
-							bytes_sent = send(client_sock,"107",4,0);
-							if(bytes_sent == -1){
-
-							}
-							bytes_received = recv(client_sock,buff,1024,0);
-							if(bytes_received == -1){
-
-							}
-
+							
 							printf("\nInsert passwd:");
 							memset(buff,'\0',(strlen(buff)+1));
 							gets(buff);
@@ -139,6 +132,17 @@ int main(){
 							strcpy(passM,userid_sent);
 							strcat(passM,"-");
 							strcat(passM,passwd_sent);
+
+							bytes_sent = send(client_sock,"107",4,0);
+							if(bytes_sent == -1){
+
+							}
+							bytes_received = recv(client_sock,buff,1024,0);
+							if(bytes_received == -1){
+
+							}
+
+							
 							//send userid + pass
 							bytes_sent = send(client_sock,passM,strlen(passM),0);
 							if(bytes_sent == -1){
