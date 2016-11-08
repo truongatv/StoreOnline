@@ -23,21 +23,13 @@ struct user
 struct MatHang
 {
 	char* name;
-<<<<<<< HEAD
 	int id;
-=======
-	char* id;
->>>>>>> origin/master
 	int gia;
 };
 struct cart
 {
 	struct user name;
-<<<<<<< HEAD
 	int* list_id;
-=======
-	char* list_id;
->>>>>>> origin/master
 };
 void menu_login();
 void error_send();
