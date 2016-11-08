@@ -14,6 +14,23 @@
 999-exit;
 888-ready;
 */
+struct user
+{
+	char* userid;
+	char* pass;
+	char* mail;
+};
+struct MatHang
+{
+	char* name;
+	char* id;
+	int gia;
+};
+struct cart
+{
+	struct user name;
+	char* list_id;
+};
 void menu_login();
 void error_send();
 void error_recv();
