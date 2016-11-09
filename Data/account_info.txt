@@ -1,8 +1,5 @@
-userid passwd
-test 123
-aloha passwdtest
-line3 lintx
-linux ubuntu
-linh 123
-linh123 123456
-truong truong123
+nntruong
+tmlinh
+ldphuc
+ttanh
+ntminh
