@@ -15,7 +15,6 @@ struct item
  {
  	/* data */
  	char* item_name; // ten
- 	char* bio;	//mo ta
  	char* price; //gia
  	char* total; //so luong 
  }; 
@@ -29,6 +28,7 @@ struct item
 struct account{
 	char* user_name;
 	char* passwd;
+	char* state;
 	struct other_info *other_info;
 	struct item_list *cart; //gio hang
 	struct item_list *favorite_list; //mat hang yeu thich
