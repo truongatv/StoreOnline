@@ -1,4 +1,4 @@
-phao hoa_30000
-einstein_80000
-ngoi mo bi an_20000
-co gai thang muoi_40000
+phao hoa	30000
+einstein	80000
+ngoi mo bi an	20000
+co gai thang muoi	40000

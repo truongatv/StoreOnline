@@ -116,7 +116,7 @@ void CopyItem(struct item currentItem,struct item newItem){
 
 void InsertFirstAccount(struct account account,struct account_list* account_list){
 	struct account_list *temp = (struct account_list*)malloc(sizeof(struct account_list));
-	CreateNodeAccount(temp);
+	CreateNodeAccount(temp->account);
 	CopyAccount(account,temp->account);
 	temp->next = account_list;
 	account_list = temp;
@@ -166,27 +166,158 @@ int CompareAccount(struct account account_1,struct account account_2){
 		return 1;
 	}else return -1;
 }
+//copy 2 accout
 void CopyAccount(struct account currentAccount,struct account newAccount){
 	strcpy(newAccount.user_name,currentAccount.user_name);
 	newAccount.state = currentAccount.state;
 	strcpy(newAccount.passwd,currentAccount.passwd);
-	strcpy(newAccount.other_info.full_name,currentAccount.other_info.full_name);
-	strcpy(newAccount.other_info.email,currentAccount.other_info.email);
-	strcpy(newAccount.other_info.address,currentAccount.other_info.address);
-	strcpy(newAccount.other_info.phone_number,currentAccount.other_info.phone_number);
+	strcpy(newAccount.other_info->full_name,currentAccount.other_info->full_name);
+	strcpy(newAccount.other_info->email,currentAccount.other_info->email);
+	strcpy(newAccount.other_info->address,currentAccount.other_info->address);
+	strcpy(newAccount.other_info->phone_number,currentAccount.other_info->phone_number);
 	CopyItem(currentAccount.favorite_list,newAccount.favorite_list);
 	CopyItem(currentAccount.cart,newAccount.cart);
 }
-void CreateNodeAccount(struct account_list* account_list){
-	(account_list->account).user_name = (char*)malloc(sizeof(char)*20);
-	(account_list->account).passwd = (char*)malloc(sizeof(char)*20);
-	(account_list->account).other_info.email = (char*)malloc(sizeof(char)*30);
-	(account_list->account).other_info.full_name = (char*)malloc(sizeof(char)*40);
-	(account_list->account).other_info.address = (char*)malloc(sizeof(char)*50);
-	(account_list->account).other_info.phone_number = (char*)malloc(sizeof(char)*50);
+// malloc cho cac bien char* cua struct account
+void CreateNodeAccount(struct account account){
+	account.favorite_list = (struct item_list*)malloc(sizeof(struct item_list));
+	account.cart = (struct item_list*)malloc(sizeof(struct item_list));
+	account.favorite->item.item_name = (char*)malloc(sizeof(char)*50);
+	account.cart->item.item_name = (char*)malloc(sizeof(char)*50);
+	account.user_name = (char*)malloc(sizeof(char)*20);
+	account.passwd = (char*)malloc(sizeof(char)*20);
+	account.other_info->email = (char*)malloc(sizeof(char)*30);
+	account.other_info->full_name = (char*)malloc(sizeof(char)*40);
+	account.other_info->address = (char*)malloc(sizeof(char)*50);
+	account.other_info->phone_number = (char*)malloc(sizeof(char)*50);
 }
 
 
 
 // add item for linklist
+struct item_list* AddItem(struct item_list* item_list){
+	// struct item_list* temp = item_list;
+	struct item item ;
+	char* price = (char*)malloc(sizeof(char)*20);
+	FILE* fr;
+	fr = fopen("./Data/item.txt","r")
+	while(!foef(fr)){
+		fscanf(fr,"%[^\t]s",&(item.item_name));
+		fscanf(fr,"%[^\n]s",price);
+		item.price = atoi(price);
+		InsertFirstItem(item,item_list);
+		// temp = temp->next;
+	}
+	return item_list;
+}
+
+// add info for account
+struct account_list* AddInfoAccount(struct account_list* account_list){
+	struct account account;
+	struct account_list* temp = (struct account_list*)malloc(sizeof(struct account_list));
+	CreateNodeAccount(account);
+	char* total = (char*)malloc(sizeof(char)*20);
+	FILE *acc = fopen("account_info.txt","r");
+	if(acc == NULL){
+		printf("cant open file account_info.txt\n");
+		return NULL;
+	}
+	while(!feof(acc)){
+		fscanf(acc,"%[\n]s",temp->account.user_name);
+		CopyAccount(ReadInfoAccount(user_name),temp->account);
+		InsertFirstAccount(temp->account,account_list);
+	}
+	fclose(acc);
+	return account_list;
+}
+
+
+
+struct account ReadInfoAccount(char* user_name){
+	struct account account;
+	CreateNodeAccount(account);
+	struct item_list* item_list = (struct item_list*)malloc(sizeof(struct item_list));
+	item_list->item.item_name = (char*)malloc(sizeof(char)*50);
+
+	struct other_info other_info;
+	other_info.email = (char*)malloc(sizeof(char)*30);
+	other_info.full_name = (char*)malloc(sizeof(char)*40);
+	other_info.address = (char*)malloc(sizeof(char)*50);
+	other_info.phone_number = (char*)malloc(sizeof(char)*50);
+
+
+	FILE *fr;
+	char* total = (char*)malloc(sizeof(char)*10);
+	
+	//add user_name
+	strcpy(account.user_name,user_name);
+	//add pass
+	fr = fopen(GetFilename(user_name,4),"r");
+	if(fr==NULL){
+		printf("cant open file pass.txt\n");
+	}
+	fscanf(fr,"%s",account.passwd);
+	fclose(fr);
+	//add favorite
+	fr = fopen(GetFilename(user_name,2),"r");
+	if(fr ==NULL){
+		printf("cant open file favorite.txt\n");
+	}
+	while(!feof(fr)){
+		fscanf(fr,"%[\t]",item_list->item.name);
+		InsertFirstItem(item_list->item,account.favorite_list);
+	}
+	fclose(fr);
+	//add cart
+	fr= fopen(GetFilename(user_name,1),"r");
+	if(fr ==NULL){
+		printf("cant open file cart.txt\n");
+	}
+	while(!feof(fr)){
+		fscanf(fr,"%[\t]s",item_list->item.item_name);
+		fscanf(fr,"%[\n]s",total);
+		item_list->item.total = atoi(total);
+		InsertFirstItem(item_list.item,account.cart);
+	}
+	fclose(fr);
+	//add info
+	fr = fopen(GetFilename(user_name,3),"r");
+	if(fr==NULL){
+		printf("cant open file info.txt\n");
+	}
+		//read other info
+	fscanf(fr,"%[\n]s",other_info.full_name);
+	fscanf(fr,"%[^\n]s",other_info.address);
+	fscanf(fr,"%[^\n]s",other_info.email);
+	fscanf(fr,"%[^\n]s",other_info.phone_number);
+	account.other_info = &(other_info);
+	return account;
+}
+char* GetFilename(char* user_name,int type){
+	char *path = (char*)malloc(sizeof(char)*50);
+	strcpy(path,"./Data/");
+	strcat(path,user_name);
+	switch(type){
+		case 1: { // cart
+			strcat(path,"/cart.txt");
+			break;
+		}
+		case 2:{ // favorite
+			strcat(path,"/favorite.txt");
+			break;
+		}
+		case 3:{
+			strcat(path,"/info.txt");
+			break;
+		}
+		case 5:{
+			strcat(path,"/status.txt");
+			break;
+		}
+		case 4:{
+			strcat(path,"/pass.txt");
+			break;
+		}
+	}
+}
 #endif 

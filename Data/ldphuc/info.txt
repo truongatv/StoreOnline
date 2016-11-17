@@ -1,4 +1,4 @@
-info
-info
-info
-info
+fullname
+address
+email
+sdt

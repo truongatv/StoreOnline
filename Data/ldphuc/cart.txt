@@ -1,2 +1,2 @@
-sach khoa hoc_3
-sach kinh te_1
+sach khoa hoc	3
+sach kinh te	1
