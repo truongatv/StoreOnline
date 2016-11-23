@@ -1,1 +1,2 @@
-123
+sach khoa hoc	3
+sach kinh te	1

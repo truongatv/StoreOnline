@@ -1,4 +1,4 @@
-phao hoa	123	30000
-einstein	1	80000
-ngoi mo bi an	2	20000
-co gai thang muoi	4	40000
+phao hoa	30000
+einstein	80000
+ngoi mo bi an	20000
+co gai thang muoi	40000

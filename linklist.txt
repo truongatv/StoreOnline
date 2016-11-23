@@ -1,0 +1,1 @@
+linklist: search, add,delete,update ( account : other_info,pass).
