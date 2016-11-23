@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 struct other_info{
 	char* email;	//mail
 	char* full_name; // ten
@@ -142,6 +144,15 @@ struct account_list* DeleteAccount(char* name,struct account_list* account_list)
 		previous->next = current->next;
 	}
 	return current;
+}
+// tim kiem mot account trong list account dua vao user name
+struct account* SearchAccount(char* user_name,struct account_list* account_list){
+	struct account_list* temp = account_list;
+	while(strcmp(temp->account.user_name,user_name)!=0 && temp!=NUL){
+		temp = temp->next;
+	}
+	if(temp ==NULL)return NULL;
+	else return &(temp->account);
 }
 int UpdateAccount(struct account currentAccount,struct account newAccount,struct account_list* account_list){
 	struct account_list* temp = account_list;
@@ -306,18 +317,88 @@ char* GetFilename(char* user_name,int type){
 			strcat(path,"/favorite.txt");
 			break;
 		}
-		case 3:{
+		case 3:{ // info
 			strcat(path,"/info.txt");
 			break;
 		}
-		case 5:{
+		case 5:{ //status
 			strcat(path,"/status.txt");
 			break;
 		}
-		case 4:{
+		case 4:{//pass
 			strcat(path,"/pass.txt");
 			break;
 		}
 	}
+}
+
+
+
+
+//write file
+// ham tra ve 1 neu than cong, tra ve -1 neu that bai
+int WriteInfoAccount(char* user_name,struct account_list* account_list){
+	struct account* account = NULL;
+	FILE* fr;
+	account = SearchAccount(user_name,account_list);
+	if(account == NULL){
+		printf("account not exist!\n");
+		return -1;
+	}
+	if(account!=NULL){
+		// write cart
+		fr=fopen(GetFilename(user_name,1),"w");
+		if(fr ==NULL){
+			printf("cant open file cart.txt for write !\n");
+			return -1;
+		}
+		while(account.cart->next!=NULL){
+			fprintf(fr, "%s\t",account.cart->item.item_name );
+			fprintf(fr, "%d\n",account.cart->item.total );
+		}
+		fclose(fr);
+		//write favorite
+		fr = fopen(GetFilename(user_name,2),"w");
+		if(fr == Null){
+			printf("cant open file favorite.txt for write!\n");
+			return -1;
+		}
+		while(account.favorite->next!=NULL){
+			fprintf(fr, "%s\t",account.favorite->item.item_name );
+		}
+		fclose(fr);
+		//write info
+		fr = fopen(GetFilename(user_name,3),"w");
+		if(fr == NULL){
+			printf("cant open file info.txt for write!\n");
+			return -1;
+		}
+		fprintf(fr, "%s\n",account.other_info->full_name );
+		fprintf(fr, "%s\n",account.other_info->address );
+		fprintf(fr, "%s\n",account.other_info->email );
+		fprintf(fr, "%s\n",account.other_info->phone_number );
+		fclose(fr);
+		//write pass
+		fr = fopen(GetFilename(user_name,4),"w");
+		if(fr==NULL){
+			printf("cant open file pass.txt for write!\n");
+			return -1;
+		}
+		fprintf(fr, "%s\n",account.passwd );
+		fclose(fr);
+	}
+}
+// write list account
+//return 1: done
+// return -1: fail
+int WriteListAccount(char* user_name,char* passwd){
+	FILE* fr;
+	fr = fopen("account_info.txt","a");
+	if(fr ==NULL){
+		printf("cant open file account_info.txt for write!\n");
+		return -1;
+	}
+	fprintf(fr, "\n%s",user_name );
+	struct stat stat = {0};
 }
 #endif 
