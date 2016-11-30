@@ -8,6 +8,7 @@
 #include <netdb.h>
 #include <sys/wait.h>
 
+int retry_times = 0;
 void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 	int bytes_received,bytes_sent;
 	char buff[1024];
@@ -29,7 +30,7 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 		case 102:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			Send_Passwd_Respond(server_sock,code,param1,param2);
+			Send_Passwd_Respond(server_sock,code,param1,param2,con);
 			break;
 		}
 		case 201:{
@@ -40,7 +41,7 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 		case 202:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			Send_Passwd_Respond(server_sock,code,param1,param2);
+			Send_Passwd_Respond(server_sock,code,param1,param2,con);
 			break;
 		}
 		case 301:{
@@ -131,6 +132,10 @@ void Send_Message(int server_sock,char* request_code){
 		}
 		case 154:{
 			strcat(request,"msg_match_username_passwd");
+			break;
+		}
+		case 155:{
+			strcat(request,"msg_retry_over_5_times");
 			break;
 		}
 		case 250:{
@@ -228,7 +233,12 @@ void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MY
 			//online
 			switch(i){
 				case 101:{
-					Send_Message(server_sock,"151");
+					result = check_status_account(user_name,con);
+					if( result == 1){
+						Send_Message(server_sock,"151");
+					} else{
+						Send_Message(server_sock,"152");
+					}
 					break;
 				}
 				case 201:{
@@ -263,33 +273,37 @@ void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MY
 	}
 }
 
-void Send_Passwd_Respond(int server_sock, char* request_code, char* user_name,char* passwd){
-	// int bytes_sent,bytes_received;
-	// char buff[1024];
-
-
-	// int i = atoi(request_code);
-	// switch(i){
-	// 	case 102:{
-	// 		char* _passwd = (char*)malloc(sizeof(char)*50);
-	// 		_passwd = Get_Passwd(user_name);
-	// 		if(strcmp(_passwd,passwd) == 0){
-	// 			//match passwd
-
-	// 			Send_Message(server_sock,"154");
-	// 			Set_status(user_name,1);	//set status 0 -> 1
-	// 		} else{
-	// 			// not match passwd
-	// 			Send_Message(server_sock,"153");
-	// 		}
-	// 		break;
-	// 	}
-	// 	case 202:{
-	// 		Create_new_acc(username,passwd,con);
-	// 		Send_Message(server_sock,"252");
-	// 		break;
-	// 	}
-	// }
+void Send_Passwd_Respond(int server_sock, char* request_code, char* user_name,char* passwd,MYSQL*con){
+	int bytes_sent,bytes_received;
+	char buff[1024];
+	printf("%d\n",retry_times );
+	int i = atoi(request_code);
+	int result = check_password_from_user_name(user_name,passwd,con);
+	switch(i){
+		case 102:{
+		
+			if(result == 1){
+				//match passwd
+				Send_Message(server_sock,"154");
+				update_status(user_name,1,con);
+			} else{
+				// not match passwd
+				retry_times ++;
+				if(retry_times >= 5){
+					Send_Message(server_sock,"155");
+				} else{
+					Send_Message(server_sock,"153");
+				}
+			}
+			break;
+		}
+		case 202:{
+			create_account(user_name,passwd,con);
+			Send_Message(server_sock,"252");
+			update_status(user_name,1,con);
+			break;
+		}
+	}
 	
 	
 }

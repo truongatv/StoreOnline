@@ -80,6 +80,7 @@ Login
 	152//msg_acc_currently_offline
 	153//msg_not_match_passwd
 	154//msg_match_username_passwd
+	155//msg_retry_over_5_times
 Signup
 	250//msg_username_has_been_used
 	251//msg_username_can_be_used

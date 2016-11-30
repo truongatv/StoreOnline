@@ -9,19 +9,28 @@
 #include "client_to_server.c"
 #define PORT 5550
 
+
 void first_menu(char* choise){
 	printf("__________MENU_________\n\t1.Login\n\t2.SignUp\n\t3.Exit\n\nInsert your choise:");
 	gets(choise);
 }
+void second_menu(char* choise){
+	printf("__________MENU_________\n\t1.LogOut\n");
+	gets(choise);
+}
 int main(){
+
 	int client_sock;
 	char buff[1024];
 	struct sockaddr_in server_addr;
 	int bytes_sent,bytes_received;
 	int total_byte_sent =0;
-	char* choise = (char*)malloc(sizeof(char)*4);
 	int i ;
+
+	char* choise = (char*)malloc(sizeof(char)*4);
 	char* result_code = (char*)malloc(sizeof(char)*10);
+	char* temp = (char*)malloc(sizeof(char)*10);
+
 	client_sock=socket(AF_INET,SOCK_STREAM,0);
 
 	server_addr.sin_family = AF_INET;
@@ -42,28 +51,52 @@ int main(){
 		puts(buff);
 	}
 	do{
-		first_menu(choise);
-		i = atoi(choise);
-	} while (i <=  0 || i>3);
+		do{
+			first_menu(choise);
+			i = atoi(choise);
+		} while (i <=  0 || i>3);
 
-	
-	switch(i){
-		case 1:{
-			Send_Request(client_sock,"101",result_code);
-			Show_Message(result_code);
-			break;
+		
+		switch(i){
+			case 1:{
+				Send_Request(client_sock,"101",result_code);
+				Show_Message(result_code,temp);
+				if(strcmp(temp,"1") == 0){
+					do{
+						Send_Request(client_sock,"102",result_code);
+						Show_Message(result_code,temp);
+					}
+					while(strcmp(temp,"3") == 0);
+				}
+				break;
+			}
+			case 2:{
+				Send_Request(client_sock,"201",result_code);
+				Show_Message(result_code,temp);
+				if(strcmp(temp,"1") == 0){
+					Send_Request(client_sock,"202",result_code);
+					Show_Message(result_code,temp);
+				}
+				break;
+			}
+			case 3:{
+				return 0;
+			}
 		}
-		case 2:{
 
-			break;
-		}
-		case 3:{
-			return 0;
-		}
+	} while (strcmp(temp,"0") == 0);
+	if(strcmp(temp,"4") == 0){
+		printf("exit!!\n");
+		close(client_sock);
+		return 0;
 	}
-	bytes_sent = send(client_sock,choise,strlen(choise),0);
-	if(bytes_sent <0){
-
+	if(strcmp(temp,"2") == 0){
+		printf("Welcome back!\n");
+		do{
+			second_menu(choise);
+			i = atoi(choise);
+		} while (i <=  0 || i>3);
 	}
+	close(client_sock);
 	return 0;
 }

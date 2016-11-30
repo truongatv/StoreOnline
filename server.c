@@ -75,27 +75,20 @@ int main(){
 				close(conn_sock);
 				continue;
 			}
-			
-			bytes_received = recv(conn_sock,recv_data,1024,0); //blocking
-			if (bytes_received < 0){
-				printf("\nError!Can not receive data from client!");
-				close(conn_sock);
+			while(1){
+				bytes_received = recv(conn_sock,recv_data,1024,0); //blocking
+				if (bytes_received < 0){
+					printf("\nError!Can not receive data from client!");
+					close(conn_sock);
+				}
+				else{
+					recv_data[bytes_received] = '\0';
+					puts(recv_data);
+				}
+				char* request = (char*)malloc(sizeof(char)*1024);
+				strcpy(request,&recv_data[0]);
+				Excute_Request(conn_sock,request,con);
 			}
-			else{
-				recv_data[bytes_received] = '\0';
-				puts(recv_data);
-			}
-			char* request = (char*)malloc(sizeof(char)*1024);
-			strcpy(request,&recv_data[0]);
-			Excute_Request(conn_sock,request,con);
-
-			// bytes_sent = send(conn_sock,"150//msg_not_match_user_name",100,0); /* send to the client welcome message */
-			// if (bytes_sent < 0){
-			// 	printf("\nError!Can not sent data to client!");
-			// 	close(conn_sock);
-			// 	continue;
-			// }
-			exit(0);
 		}
 		
 		signal(SIGCHLD,sig_chld);

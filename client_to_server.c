@@ -1,4 +1,14 @@
-#include "client_to_server.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/wait.h>
+
+char* user_name_sent;
 
 void Send_Request(int client_sock,char* request_code,char* result_code){
 	int bytes_sent, bytes_received;
@@ -13,27 +23,27 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 	switch(int_request_code){
 		case 101:{
 			// send user name to login
-			Send_UserName(client_sock,request_code,username,result_code);
+			Send_UserName(client_sock,request_code,result_code);
 			break;
 		}
 		case 102:{
 			// send passwd to login
-			Send_Passwd(client_sock,request_code,username,passwd,result_code);
+			Send_Passwd(client_sock,request_code,passwd,result_code);
 			break;
 		}
 		case 201:{
 			// send user name to signup
-			Send_UserName(client_sock,request_code,username,result_code);
+			Send_UserName(client_sock,request_code,result_code);
 			break;
 		}
 		case 202:{
 			// send passwd to create new account
-			
+			Send_Passwd(client_sock,request_code,passwd,result_code);
 			break;
 		}
 		case 301:{
 			// send username to logout
-			Send_State(client_sock,request_code,username,result_code);
+			Send_State(client_sock,request_code,result_code);
 			break;
 		}
 		case 401:{
@@ -49,7 +59,7 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 		}
 		case 503:{
 			// send user name to get all item from favorite list
-			Send_State(client_sock,request_code,username,result_code);
+			Send_State(client_sock,request_code,result_code);
 			break;
 		}
 		case 601:{
@@ -65,12 +75,12 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 		}
 		case 604:{
 			// send user name to get total cost
-			Send_State(client_sock,request_code,username,result_code);
+			Send_State(client_sock,request_code,result_code);
 			break;
 		}
 	}
 }
-void Show_Message(char* respond){
+void Show_Message(char* respond,char* result){
 	char* result_code = (char*)malloc(sizeof(char)*10);
 	char* msg = (char*)malloc(sizeof(char)*100);
 	char* params = (char*)malloc(sizeof(char)*800);
@@ -80,25 +90,58 @@ void Show_Message(char* respond){
 	int i = atoi(result_code);
 	switch(i){
 		case 150:{
-
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg);
+			strcpy(result,"0");
+			break;
 		}
 		case 151:{
-
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg);
+			strcpy(result,"0");
+			break;
 		}
 		case 152:{
-
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg);
+			strcpy(result,"1");
+			break;
+		}
+		case 153:{
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg );
+			strcpy(result,"3");
+			break;
 		}
 		case 154:{
-
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg);
+			strcpy(result,"2");
+			break;
+		}
+		case 155:{
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg );
+			strcpy(result,"4");
+			break;
 		}
 		case 250:{
-
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg);
+			strcpy(result,"0");
+			break;
 		}
 		case 251:{
-
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg);
+			strcpy(result,"1");
+			break;
 		}
 		case 252:{
-
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg);
+			strcpy(result,"2");
+			break;
 		}
 		case 351:{
 
@@ -153,7 +196,7 @@ void Show_Message(char* respond){
 	}
 }
 // request_code == 101 || 201 || 301 || 603 || 604
-void Send_UserName(int client_sock,char*request_code,char* userName,char* result_code){
+void Send_UserName(int client_sock,char*request_code,char* result_code){
 	char buff[1024];
 	do{
 		printf("\nInsert userid:");
@@ -161,19 +204,20 @@ void Send_UserName(int client_sock,char*request_code,char* userName,char* result
 		gets(buff);
 	}while((int)strlen(buff) == 0);
 
-	strcpy(userName,&buff[0]);
-	Send_State(client_sock,request_code,userName,result_code);
+	user_name_sent = (char*)malloc(sizeof(char)*50);
+	strcpy(user_name_sent,&buff[0]);
+	Send_State(client_sock,request_code,result_code);
 
 }
 
-void Send_State(int client_sock,char* request_code,char* username,char* result_code){
+void Send_State(int client_sock,char* request_code,char* result_code){
 	int bytes_sent,bytes_received;
 	char buff[1024];
 	char *request = (char*)malloc(sizeof(char)*1024);
 
 	strcpy(request,request_code);
 	strcat(request,"//");
-	strcat(request,username);
+	strcat(request,user_name_sent);
 
 	//send request_code//username
 	bytes_sent = send(client_sock,request,strlen(request),0);
@@ -188,7 +232,7 @@ void Send_State(int client_sock,char* request_code,char* username,char* result_c
 	strcpy(result_code,&buff[0]);
 }
 //request_code == 102 || 202
-void Send_Passwd(int client_sock,char* request_code,char*userName,char* passwd,char* result_code){
+void Send_Passwd(int client_sock,char* request_code,char* passwd,char* result_code){
 	int bytes_sent,bytes_received;
 	char buff[1024];
 
@@ -205,7 +249,7 @@ void Send_Passwd(int client_sock,char* request_code,char*userName,char* passwd,c
 	
 	strcpy(PassM,request_code);
 	strcat(PassM,"//");
-	strcat(PassM,userName);
+	strcat(PassM,user_name_sent);
 	strcat(PassM,"//");
 	strcat(PassM,passwd);
 
