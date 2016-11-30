@@ -117,14 +117,25 @@ char* search_item(char* item_name,MYSQL* con){
   char statement[200];
   char* temp;
   temp =(char*)malloc(sizeof(char)*100);
-  snprintf(statement,200,"SELECT * FROM item WHERE item_name='%s'",item_name);
+  snprintf(statement,200,"SELECT * FROM item WHERE item_name like '%%%s%%'",item_name);
   mysql_query(con,statement);
   MYSQL_RES *result = mysql_store_result(con);
+  int row = mysql_num_rows(result);
+  if(row == 0){
+    return "";
+  }
   MYSQL_ROW raw;
+  strcpy(temp,"");
   raw = mysql_fetch_row(result);
-  strcpy(temp,raw[0]);
-  strcat(temp,"\t");
-  strcat(temp,raw[1]);
+  while(raw != NULL){
+    strcat(temp,"\t");
+    strcat(temp,raw[0]);
+    strcat(temp," : ");
+    strcat(temp,raw[1]);
+    strcat(temp,"$\n");
+    raw = mysql_fetch_row(result);
+  }
+  
   return temp;
 }
 void insert_item(char* item_name,int price,MYSQL* con){
@@ -229,7 +240,7 @@ int get_total_cost(char* user_name,MYSQL* con){
   }
   return total;
 }
-void updata_info_account(char* user_name,char* password,char* full_name,char* address,char* email,char* sdt,MYSQL* con){
+void update_info_account(char* user_name,char* password,char* full_name,char* address,char* email,char* sdt,MYSQL* con){
   char statement[200];
   snprintf(statement,200,"UPDATE account_info SET full_name = '%s',address = '%s',email = '%s',sdt = '%s' WHERE user_name = '%s'",full_name,address,email,sdt,user_name);
   mysql_query(con,statement);
@@ -285,6 +296,7 @@ void updata_info_account(char* user_name,char* password,char* full_name,char* ad
 //    // printf("%d\n",check_exits_user_name("nam",con) );
 //    // printf("%d\n",check_password_from_user_name("minh","minh123",con) );
 //    // updata_info_account("minh","minh123","nguyen van minh","ha nam","nvm@gmail.com","1234",con);
+//    printf("%s",search_item("sach",con));
 //    mysql_close(con);
 //   exit(0);
 // }
