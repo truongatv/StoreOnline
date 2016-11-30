@@ -1,13 +1,13 @@
 #include "client_to_server.h"
 
-void Send_Request(int client_sock,char* request_code){
+void Send_Request(int client_sock,char* request_code,char* result_code){
 	int bytes_sent, bytes_received;
 	int int_request_code;
 	int_request_code = atoi(request_code);
 
 	char* username = (char*)malloc(sizeof(char)*50);
 	char* passwd = (char*)malloc(sizeof(char)*50);
-	char* result_code = (char*)malloc(sizeof(char)*10);
+
 	char* itemName = (char*)malloc(sizeof(char)*1024);
 
 	switch(int_request_code){
@@ -28,7 +28,7 @@ void Send_Request(int client_sock,char* request_code){
 		}
 		case 202:{
 			// send passwd to create new account
-			Send_Passwd(client_sock,request_code,username,result_code);
+			
 			break;
 		}
 		case 301:{
@@ -57,7 +57,7 @@ void Send_Request(int client_sock,char* request_code){
 		}
 		case 602:{
 			// send user name + item + number to remove from cart list
-			Send_Item(client_sock,request_code,username,itemName,number,result_code);
+			
 			break;
 		}
 		case 603:{
@@ -154,7 +154,7 @@ void Show_Message(char* respond){
 }
 // request_code == 101 || 201 || 301 || 603 || 604
 void Send_UserName(int client_sock,char*request_code,char* userName,char* result_code){
-
+	char buff[1024];
 	do{
 		printf("\nInsert userid:");
 		memset(buff,'\0',(strlen(buff)+1));
@@ -204,7 +204,7 @@ void Send_Passwd(int client_sock,char* request_code,char*userName,char* passwd,c
 	char* PassM = (char*)malloc(sizeof(char)*1024);
 	
 	strcpy(PassM,request_code);
-	strcat(PassM)
+	strcat(PassM,"//");
 	strcat(PassM,userName);
 	strcat(PassM,"//");
 	strcat(PassM,passwd);

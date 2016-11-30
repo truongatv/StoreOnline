@@ -1,3 +1,6 @@
+
+#include "data.c"
+#include "server_to_client.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -7,19 +10,37 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/wait.h>
-#include "server.h"
-#include "server_to_client.h"
-#include "server_to_client.c"
+#define PORT 5550
+#define BACKLOG 20
 
-
+void sig_chld(int signo){
+	pid_t pid;
+	int stat;
+	while((pid=waitpid(-1,&stat,WNOHANG))>0)
+		printf("[ForkingServer] Child %d terminated\n",pid);
+}
 int main(){
+	MYSQL *con = mysql_init(NULL);
+	if (con == NULL) {
+      fprintf(stderr, "%s\n", mysql_error(con));
+      exit(1);
+   	} 
+   	create_database(); 
+   	if (mysql_real_connect(con, "localhost", "root", "root", "data", 0, NULL, 0) == NULL) {
+      finish_with_error(con);
+   	}	
+    create_table(con);
 
-	int listenfd,conn_sock; /* file descriptors */
+
+	int listen_sock, conn_sock; /* file descriptors */
+	char recv_data[1024];
+	int bytes_sent, bytes_received;
 	struct sockaddr_in server; /* server's address information */
 	struct sockaddr_in client; /* client's address information */
-	
+	pid_t pid;
+	int sin_size;
 
-	if ((listenfd=socket(PF_INET, SOCK_STREAM, 0)) == -1 ){  /* calls socket() */
+	if ((listen_sock=socket(AF_INET, SOCK_STREAM, 0)) == -1 ){  /* calls socket() */
 		printf("socket() error\n");
 		exit(-1);
 	}
@@ -28,89 +49,60 @@ int main(){
 	server.sin_port = htons(PORT);   /* Remember htons() from "Conversions" section? =) */
 	server.sin_addr.s_addr = htonl(INADDR_ANY);  /* INADDR_ANY puts your IP address automatically */   
 
-	if(bind(listenfd,(struct sockaddr*)&server,sizeof(server))==-1){ /* calls bind() */
+	if(bind(listen_sock,(struct sockaddr*)&server,sizeof(server))==-1){ /* calls bind() */
 		printf("bind() error\n");
 		exit(-1);
 	}     
 
-	if(listen(listenfd,BACKLOG) == -1){  /* calls listen() */
+	if(listen(listen_sock,BACKLOG) == -1){  /* calls listen() */
 		printf("listen() error\n");
 		exit(-1);
 	}
-	int bytes_sent, bytes_received;
-	char recv_data[1024];
-	int sin_size;
-	fd_set readfds;
-	fd_set sockfds;
-	fd_set writefds;
 
-	int clients[FD_SETSIZE];
-	int i;
-	int maxfd = listenfd;
-
-	for( i =0; i <FD_SETSIZE;i++){
-		clients[i] = -1;
-	}
-	FD_ZERO(&readfds);
-	FD_ZERO(&sockfds);
-
-	FD_SET(listenfd,&sockfds);
-
-	int nEvents;
-	sin_size = sizeof(struct sockaddr_in);
 	while(1){
-		readfds = sockfds;
-		nEvents = select(maxfd+1, &readfds,NULL,NULL,NULL);
-		if(nEvents < 0){
-			printf("Error events < 0\n");
+		sin_size=sizeof(struct sockaddr_in);
+		if ((conn_sock = accept(listen_sock,(struct sockaddr *)&client,&sin_size))==-1){ /* calls accept() */
+			printf("accept() error\n");
+			exit(-1);
+		}
+  
+		if((pid=fork())==0){
+			close(listen_sock);
+			//printf("You got a connection from %s\n",inet_ntoa(client.sin_addr) ); /* prints client's IP */
+			bytes_sent = send(conn_sock,"Welcome to my server.\n",22,0); /* send to the client welcome message */
+			if (bytes_sent < 0){
+				printf("\nError!Can not sent data to client!");
+				close(conn_sock);
+				continue;
+			}
+			
+			bytes_received = recv(conn_sock,recv_data,1024,0); //blocking
+			if (bytes_received < 0){
+				printf("\nError!Can not receive data from client!");
+				close(conn_sock);
+			}
+			else{
+				recv_data[bytes_received] = '\0';
+				puts(recv_data);
+			}
+			char* request = (char*)malloc(sizeof(char)*1024);
+			strcpy(request,&recv_data[0]);
+			Excute_Request(conn_sock,request,con);
+
+			// bytes_sent = send(conn_sock,"150//msg_not_match_user_name",100,0); /* send to the client welcome message */
+			// if (bytes_sent < 0){
+			// 	printf("\nError!Can not sent data to client!");
+			// 	close(conn_sock);
+			// 	continue;
+			// }
 			exit(0);
 		}
-		if(FD_ISSET(listenfd,&readfds) != 0){
-			conn_sock = accept(listenfd,(struct sockaddr*)&client,&sin_size);
-			for(i =0;i <FD_SETSIZE; i++){
-				if(clients[i] == -1)
-					break;
-			}
-			if( i == FD_SETSIZE){
-				printf("Max connection reached!\n");
-				continue;
-			} else{
-				clients[i] = conn_sock;
-				if(conn_sock > maxfd){
-					maxfd = conn_sock;
-				}
-				FD_SET(conn_sock,&sockfds);
-			}
-			nEvents--;
-		}
 		
-		for(i = 0;i<FD_SETSIZE; i++){
+		signal(SIGCHLD,sig_chld);
 		
-			if(FD_ISSET(clients[i],&readfds) !=0){
-				bytes_received = recv(clients[i], recv_data,1024,0);
-				if(bytes_received == -1){
-					error_recving();
-					close(clients[i]);
-					FD_CLR(clients[i],&sockfds);
-					clients[i] = -1;
-				}
-
-				recv_data[bytes_received] = '\0';
-				if(strcmp(recv_data,"999") == 0){
-					printf("Close clients %d.\n",clients[i]);
-					close(clients[i]);
-					FD_CLR(clients[i],&sockfds);
-				}
-				
-				
-				// close(clients[i]);
-				// FD_CLR(clients[i],&sockfds);
-				// clients[i] = -1;
-			}
-		}
-
+		close(conn_sock);
 	}
-	close(listenfd);
+	close(listen_sock);
+	mysql_close(con);
 	return 1;
 }
-

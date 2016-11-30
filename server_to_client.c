@@ -1,9 +1,14 @@
-#include "server_to_client.h"
-#include "account.c"
-#include "account.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/wait.h>
 
-
-void Excute_Request(int server_sock,char* request_code){
+void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 	int bytes_received,bytes_sent;
 	char buff[1024];
 
@@ -18,7 +23,7 @@ void Excute_Request(int server_sock,char* request_code){
 	switch(i){
 		case 101:{
 			param1 = strtok(NULL,"//");
-			Send_UserName_Respond(server_sock,code,param1);
+			Send_UserName_Respond(server_sock,code,param1,con);
 			break;
 		}
 		case 102:{
@@ -29,7 +34,7 @@ void Excute_Request(int server_sock,char* request_code){
 		}
 		case 201:{
 			param1 = strtok(NULL,"//");
-			Send_UserName_Respond(server_sock,code,param1);
+			Send_UserName_Respond(server_sock,code,param1,con);
 			break;
 		}
 		case 202:{
@@ -40,43 +45,43 @@ void Excute_Request(int server_sock,char* request_code){
 		}
 		case 301:{
 			param1 = strtok(NULL,"//");
-			Send_UserName_Respond(server_sock,code,param1);
+			Send_UserName_Respond(server_sock,code,param1,con);
 			break;
 		}
 		case 401:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			Find_Item_info(param2);
+			//Find_Item_info(param2);
 			//TODO send back item info
 			break;
 		}
 		case 501:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			int x = Find_Item_in_Favorite_list(param1,param2);
-			//TODO
-			if (x == 0){
-				// not found
-				Send_Message(server_sock,"551");
-				Add_Item_To_Favorite_list(param1,param2);
-			} else{
-				// found
-				Send_Message(server_sock,"550");
-			}
+			// int x = Find_Item_in_Favorite_list(param1,param2);
+			// //TODO
+			// if (x == 0){
+			// 	// not found
+			// 	Send_Message(server_sock,"551");
+			// 	Add_Item_To_Favorite_list(param1,param2);
+			// } else{
+			// 	// found
+			// 	Send_Message(server_sock,"550");
+			// }
 			break;
 		}
 		case 502:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			int x = Find_Item_in_Favorite_list(param1,param2);
-			if(x == 0){
-				// not found
-				Send_Message(server_sock,"552");
-			} else{
-				//found
-				Remove_Item_From_Favorite_list(param1,param2);
-				Send_Message(server_sock,"553");
-			}
+			// int x = Find_Item_in_Favorite_list(param1,param2);
+			// if(x == 0){
+			// 	// not found
+			// 	Send_Message(server_sock,"552");
+			// } else{
+			// 	//found
+			// 	Remove_Item_From_Favorite_list(param1,param2);
+			// 	Send_Message(server_sock,"553");
+			// }
 			break;
 		}
 		case 503:{
@@ -106,6 +111,7 @@ void Send_Message(int server_sock,char* request_code){
 	int bytes_sent,bytes_received;
 	char* request = (char*) malloc(sizeof(char)*1024);
 	strcpy(request,request_code);
+	strcat(request,"//");
 	switch(i){
 		case 150:{
 			strcat(request,"msg_not_match_user_name");
@@ -176,6 +182,7 @@ void Send_Message(int server_sock,char* request_code){
 			break;
 		}
 	}
+	printf("%s\n",request );
 	bytes_sent = send(server_sock,request,strlen(request),0);
 	if(bytes_sent < 0){
 
@@ -194,15 +201,15 @@ void Send_Message(int server_sock,char* request_code){
 // 	user_name = strtok(NULL,"//");
 
 // }
-void Send_UserName_Respond(int server_sock,char* request_code,char* user_name){
+void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MYSQL* con){
 	int bytes_sent,bytes_received;
 	char buff[1024];
 	
 	int i = atoi(request_code);
 
 	//find username
-	
-	int result = Find_UserName(username);
+	int result = check_exits_user_name(user_name,con);
+	printf("%d\n",result );
 	if(result == -1){
 		// not found user name
 		switch(i){
@@ -229,7 +236,7 @@ void Send_UserName_Respond(int server_sock,char* request_code,char* user_name){
 					break;
 				}
 				case 301:{
-					Set_status(user_name,0);	//set acc status = 1 thanh status = 0
+					//Set_status(user_name,con,0);	//set acc status = 1 thanh status = 0
 					Send_Message(server_sock,"351");
 					break;
 				}
@@ -257,32 +264,32 @@ void Send_UserName_Respond(int server_sock,char* request_code,char* user_name){
 }
 
 void Send_Passwd_Respond(int server_sock, char* request_code, char* user_name,char* passwd){
-	int bytes_sent,bytes_received;
-	char buff[1024];
+	// int bytes_sent,bytes_received;
+	// char buff[1024];
 
 
-	int i = atoi(request_code);
-	switch(i){
-		case 102:{
+	// int i = atoi(request_code);
+	// switch(i){
+	// 	case 102:{
+	// 		char* _passwd = (char*)malloc(sizeof(char)*50);
+	// 		_passwd = Get_Passwd(user_name);
+	// 		if(strcmp(_passwd,passwd) == 0){
+	// 			//match passwd
 
-			if(strcmp(_passwd,passwd) == 0){
-				//match passwd
-				char* _passwd = (char*)malloc(sizeof(char)*50);
-				_passwd = Get_Passwd(user_name);
-				Send_Message(server_sock,"154");
-				Set_status(user_name,1);	//set status 0 -> 1
-			} else{
-				// not match passwd
-				Send_Message(server_sock,"153");
-			}
-			break;
-		}
-		case 202:{
-			Create_new_acc(username,passwd);
-			Send_Message(server_sock,"252");
-			break;
-		}
-	}
+	// 			Send_Message(server_sock,"154");
+	// 			Set_status(user_name,1);	//set status 0 -> 1
+	// 		} else{
+	// 			// not match passwd
+	// 			Send_Message(server_sock,"153");
+	// 		}
+	// 		break;
+	// 	}
+	// 	case 202:{
+	// 		Create_new_acc(username,passwd,con);
+	// 		Send_Message(server_sock,"252");
+	// 		break;
+	// 	}
+	// }
 	
 	
 }

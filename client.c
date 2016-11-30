@@ -7,87 +7,63 @@
 #include <unistd.h>
 #include <string.h>
 #include "client_to_server.c"
-#include "client_to_server.h"
+#define PORT 5550
 
+void first_menu(char* choise){
+	printf("__________MENU_________\n\t1.Login\n\t2.SignUp\n\t3.Exit\n\nInsert your choise:");
+	gets(choise);
+}
 int main(){
 	int client_sock;
 	char buff[1024];
 	struct sockaddr_in server_addr;
-	int bytes_sent,bytes_received, sin_size;
-
+	int bytes_sent,bytes_received;
+	int total_byte_sent =0;
+	char* choise = (char*)malloc(sizeof(char)*4);
+	int i ;
+	char* result_code = (char*)malloc(sizeof(char)*10);
 	client_sock=socket(AF_INET,SOCK_STREAM,0);
 
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(6550);
+	server_addr.sin_port = htons(PORT);
 	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	
-	sin_size = sizeof(struct sockaddr);	
 
 	if(connect(client_sock,(struct sockaddr*)&server_addr,sizeof(struct sockaddr))!=0){
 		printf("\nError!Can not connect to sever!Client exit imediately! ");
 		return 0;
 	}
-	char* reply = (char*) malloc(sizeof(char) *1024);
-	while(1){
-		
-	}
-	printf("Bye!\n");
-	close(client_sock);
-	return 0;
-}
-/*
-888 - ready
-100 - send username
-101 - send passm
-103 - not mach username
-104 - acc is current online
-105 - acc is current offline
-107 - not match passwd
-108 - match passwd
-*/
-
-void Login(int* client_sock,char* userName,char*passwd,char* result_code){
-	Send_UserName(client_sock,userName,result_code);
-	if(strcmp(result_code,"103") == 0){
-		//error not match username
-		printf("Not match UserName!\n");
-		return;
+	bytes_received = recv(client_sock,buff,1024,0); //blocking
+	if (bytes_received < 0){
+		printf("\nError!Can not receive data from client!");
+		close(client_sock);
 	}
 	else{
-		if(strcmp(result_code,"104") == 0){
-			// error acc is online
-			printf("Account currently online!\n");
-		} else{
-			int retry_times = 0;
-			do{
-				retry_times++;
-				Send_Passwd(client_sock,userName,passwd,result_code);
-				if(strcmp(result_code,"108") == 0){
-					break;
-				}
-			} while(retry_times <= 5);
-			if(strcmp(result_code,"108") == 0){
-				printf("Login\n");
-				return;
-			} else{
-				printf("Error \n");
-				return;
-			}
+		buff[bytes_received] = '\0';
+		puts(buff);
+	}
+	do{
+		first_menu(choise);
+		i = atoi(choise);
+	} while (i <=  0 || i>3);
+
+	
+	switch(i){
+		case 1:{
+			Send_Request(client_sock,"101",result_code);
+			Show_Message(result_code);
+			break;
+		}
+		case 2:{
+
+			break;
+		}
+		case 3:{
+			return 0;
 		}
 	}
-}
+	bytes_sent = send(client_sock,choise,strlen(choise),0);
+	if(bytes_sent <0){
 
-void Signup(int* client_sock,char* userName, char* passwd,char* result_code){
-	Send_UserName(client_sock,userName,result_code);
-	if(strcmp(result_code,"103") != 0){
-		printf("Already has acc\n");
-		return;
-	} else{
-		Send_Passwd(client_sock,userName,passwd,result_code);
-		return;
 	}
-}
-
-void Search_Item(int* client_sock, char* userName,char* passwd,char* result_code){
-	
+	return 0;
 }
