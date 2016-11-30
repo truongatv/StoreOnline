@@ -70,7 +70,7 @@ void delete_account(char* user_name,MYSQL* con){
   snprintf(statement,100,"DELETE FROM account_info WHERE user_name = '%s'",user_name);
   mysql_query(con,statement);
 }
-void updata_status(char* user_name,int status,MYSQL* con){
+void update_status(char* user_name,int status,MYSQL* con){
   char statement[200];
   snprintf(statement,200,"UPDATE account SET status=%d WHERE user_name = '%s'",status,user_name);
   mysql_query(con,statement);
@@ -93,7 +93,8 @@ int check_password_from_user_name(char* user_name,char* password,MYSQL* con){
   snprintf(statement,100,"SELECT * FROM account WHERE user_name = '%s' AND pass = '%s'",user_name,password);
   mysql_query(con,statement);
   MYSQL_RES* result = mysql_store_result(con);
-  if(result == NULL)
+  int row = mysql_num_rows(result);
+  if(row == 0)
     return -1;
   else return 1;
 }
