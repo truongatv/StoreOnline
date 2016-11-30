@@ -9,6 +9,7 @@
 #include <sys/wait.h>
 
 int retry_times = 0;
+char* temp;
 void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 	int bytes_received,bytes_sent;
 	char buff[1024];
@@ -54,6 +55,13 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 			param2 = strtok(NULL,"//");
 			//Find_Item_info(param2);
 			//TODO send back item info
+			temp = (char*)malloc(sizeof(char)*1024);
+			strcpy(temp,search_item(param2,con));
+			if(strlen(temp) == 0){
+				Send_Message(server_sock,"451");
+			} else{
+				Send_Message(server_sock,"450");
+			}
 			break;
 		}
 		case 501:{
@@ -154,6 +162,12 @@ void Send_Message(int server_sock,char* request_code){
 			strcat(request,"msg_logout");
 			break;
 		}
+		case 450:{
+			strcat(request,"msg_found_item");
+			strcat(request,"//");
+			strcat(request,temp);
+			break;
+		}
 		case 451:{
 			strcat(request,"msg_not_found_item");
 			break;
@@ -247,6 +261,7 @@ void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MY
 				}
 				case 301:{
 					//Set_status(user_name,con,0);	//set acc status = 1 thanh status = 0
+					update_status(user_name,0,con);
 					Send_Message(server_sock,"351");
 					break;
 				}
@@ -276,7 +291,6 @@ void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MY
 void Send_Passwd_Respond(int server_sock, char* request_code, char* user_name,char* passwd,MYSQL*con){
 	int bytes_sent,bytes_received;
 	char buff[1024];
-	printf("%d\n",retry_times );
 	int i = atoi(request_code);
 	int result = check_password_from_user_name(user_name,passwd,con);
 	switch(i){

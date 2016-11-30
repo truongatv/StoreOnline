@@ -18,7 +18,7 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 	char* username = (char*)malloc(sizeof(char)*50);
 	char* passwd = (char*)malloc(sizeof(char)*50);
 
-	char* itemName = (char*)malloc(sizeof(char)*1024);
+
 
 	switch(int_request_code){
 		case 101:{
@@ -48,13 +48,17 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 		}
 		case 401:{
 			//send user name + item to search item
+			Send_Item(client_sock,request_code,result_code);
+			break;
 		}
 		case 501:{
 			// send user name + item to add to favorite list
+			Send_Item(client_sock,request_code,result_code);
+			break;
 		}
 		case 502:{
 			// send user name + item to remove from favorite list
-			Send_Item(client_sock,request_code,username,itemName,0,result_code);
+			Send_Item(client_sock,request_code,result_code);
 			break;
 		}
 		case 503:{
@@ -144,7 +148,10 @@ void Show_Message(char* respond,char* result){
 			break;
 		}
 		case 351:{
-
+			msg = strtok(NULL,"//");
+			printf("%s\n",msg);
+			strcpy(result,"4");
+			break;
 		}
 		case 451:{
 
@@ -176,7 +183,7 @@ void Show_Message(char* respond,char* result){
 			msg = strtok(NULL,"//");
 			printf("%s\n",msg);
 			params = strtok(NULL,"//");
-
+			printf("%s\n", params);
 			break;
 		}
 		case 653:{
@@ -269,18 +276,39 @@ void Send_Passwd(int client_sock,char* request_code,char* passwd,char* result_co
 }
 
 // request_code == 401 || 501 || 601 || 602
-void Send_Item(int client_sock,char* request_code, char* userName,char*itemName,int number,char* result_code){
+void Send_Item(int client_sock,char* request_code,char* result_code){
+	char* itemName = (char*)malloc(sizeof(char)*1024);
 	int bytes_sent,bytes_received;
 	char buff[1024];
+	int i;
+	do{
+		printf("\nInsert item:");
+		memset(buff,'\0',(strlen(buff)+1));
+		gets(buff);
+	}while((int)strlen(buff) == 0);
+
+	strcpy(itemName,&buff[0]);
 
 	char* request = (char*) malloc(sizeof(char)*1024);
-	strcpy(request,userName);
+
+	strcpy(request,request_code);
+	strcat(request,"//");
+	strcat(request,user_name_sent);
 	strcat(request,"//");
 	strcat(request,itemName);
 
 	if(strcmp(request_code,"601") == 0 || strcmp(request_code,"602") == 0){
+		do{
+			printf("\nInsert item:");
+			scanf("%d",&i);
+		}while(i<=0);
+		char str[10];
+
+  		sprintf(str, "%d", i);
+
 		strcat(request,"//");
-		strcat(request,number);
+		strcat(request,&str[0]);
+
 	}
 
 	bytes_sent = send(client_sock,request,strlen(request),0);

@@ -11,11 +11,19 @@
 
 
 void first_menu(char* choise){
-	printf("__________MENU_________\n\t1.Login\n\t2.SignUp\n\t3.Exit\n\nInsert your choise:");
+	printf("__________MENU_________\n\t1.Login\n\t2.SignUp\n\t3.Exit\n\nInsert your choise: ");
 	gets(choise);
 }
 void second_menu(char* choise){
-	printf("__________MENU_________\n\t1.LogOut\n");
+	printf("__________MENU_________\n\t1.Search Item\n\t2.Favorite List\n\t3.Cart List\n\t4.Logout\n\nInsert your choise: ");
+	gets(choise);
+}
+void third_menu(char* choise){
+	printf("__________FAVORITE LIST_________\n\t1.Add item to favorite list.\n\t2.Remove item from item list.\n\t3.My favorite list.\n\t4.Back.\n\nInsert your choise: ");
+	gets(choise);
+}
+void fourth_menu(char* choise){
+	printf("__________CART LIST_________\n\t1.Add item to cart list.\n\t2.Remove item from cart list\n\t3.My cart list\n\t4.Pay.\n\t5.Back\n\nInsert your choise: ");
 	gets(choise);
 }
 int main(){
@@ -50,7 +58,7 @@ int main(){
 		buff[bytes_received] = '\0';
 		puts(buff);
 	}
-	do{
+	LABEL1:do{
 		do{
 			first_menu(choise);
 			i = atoi(choise);
@@ -80,6 +88,8 @@ int main(){
 				break;
 			}
 			case 3:{
+				printf("exit!!\n");
+				close(client_sock);
 				return 0;
 			}
 		}
@@ -92,10 +102,49 @@ int main(){
 	}
 	if(strcmp(temp,"2") == 0){
 		printf("Welcome back!\n");
-		do{
+		LABEL2:do{
 			second_menu(choise);
 			i = atoi(choise);
-		} while (i <=  0 || i>3);
+		} while (i <=  0 || i > 4);
+		switch(i){
+			case 1:{
+				Send_Request(client_sock,"401",result_code);
+				Show_Message(result_code,temp);
+				goto LABEL2;
+				break;
+			}
+			case 2:{
+				do{
+					third_menu(choise);
+					i = atoi(choise);
+				} while (i <=  0 || i > 4);
+				switch(i){
+					case 4:{
+						goto LABEL2;
+						break;
+					}
+				}
+				break;
+			}
+			case 3:{
+				do{
+					fourth_menu(choise);
+					i = atoi(choise);
+				} while (i <=  0 || i > 5);
+				switch(i){
+					case 5:{
+						goto LABEL2;
+						break;
+					}
+				}
+			}
+			case 4:{
+				Send_Request(client_sock,"301",result_code);
+				Show_Message(result_code,temp);
+				goto LABEL1;
+				break;
+			}
+		}
 	}
 	close(client_sock);
 	return 0;
