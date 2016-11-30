@@ -70,8 +70,8 @@ Favorite list
 Cart list
 	601//state//ItemName//number 	-- 		add new item to cart list with number of item
 	602//state//ItemName//number 	-- 		remove number of item from cart list 
-	603//state						-- 		get total cost
-	604//state 						--		show cart list
+	603//state						-- 		show cart list 
+	604//state 						--		get total cost
 
 	server
 Login
@@ -99,8 +99,8 @@ Cart list
 	650//msg_success_add_item_to_cart
 	651//msg_success_remove_item_from_cart_list
 	652//msg_error_when_remove_item_from_cart_list
-	653//cart_list//total_cost
-	654//cart_list
+	653//cart_list
+	654//cart_list//total_cost
 */
 struct account_list *account_list =NULL;
 // link list for item
