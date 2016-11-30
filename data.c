@@ -178,11 +178,6 @@ char* show_all_favorite(char* user_name,MYSQL* con){
   mysql_free_result(result);
   return temp;
 }
-// void add_item_cart(char* user_name,char* item_name,int total,MYSQL* con){
-//   char statement[200];
-//   snprintf(statement,200,"INSERT INTO account_cart VALUES('%s','%s','%d')",user_name,item_name,total);
-//   mysql_query(con,statement);
-// }
 void delete_item_from_cart(char* user_name,char* item_name,MYSQL* con){
     char statement[100];
     snprintf(statement,100,"DELETE FROM account_cart WHERE user_name = '%s' AND item_name = '%s'",user_name,item_name);
@@ -215,7 +210,8 @@ int get_price(char* item_name,MYSQL* con){
   mysql_query(con,statement);
   MYSQL_RES* result = mysql_store_result(con);
   MYSQL_ROW row = mysql_fetch_row(result);
-  return row[0];
+  // printf("price: %d\n",atoi(row[0]) );
+  return atoi(row[0]);
 }
 int get_total_cost(char* user_name,MYSQL* con){
   char statement[200];
@@ -228,13 +224,7 @@ int get_total_cost(char* user_name,MYSQL* con){
   int num_fields = mysql_num_fields(result);
   MYSQL_ROW row;
   while(row = mysql_fetch_row(result)){
-    // printf("get price: %d\n",get_price(row[0],con) );
-    printf("row: %d\n",atoi(row[1]) );
-    // total += (get_price(row[0],con))*atoi(row[1]);
-    // printf("total: %d\n",total);
-    // for(i=0;i<num_fields;i++){
-    //   // snprintf(statement,200,"SELECT price FROM item WHERE item_name = '%s'",row[0]);
-    // }
+    total += (get_price(row[0],con))*atoi(row[1]);
   }
   return total;
 }
@@ -247,8 +237,6 @@ void updata_info_account(char* user_name,char* password,char* full_name,char* ad
 }
 void main(){
    MYSQL *con = mysql_init(NULL);
-  // char pass[]="truong";
-   int pass = 2;
    if (con == NULL) 
    {
       fprintf(stderr, "%s\n", mysql_error(con));
@@ -268,7 +256,7 @@ void main(){
    insert_info("minh","nguyen tri minh","ha noi","ntm@gmail.com","0123456",con);
    insert_info("minh","nguyen tien truong","ha noi","ntt@gmail.com","123455",con);
    // printf("done\n");
-   printf("check: %d\n",check_exits_user_name("aloha",con));
+   printf("check EXISTS account: %d\n",check_exits_user_name("nam",con));
    delete_account("minh",con);
    insert_item("sach1",100,con);
    insert_item("sach2",200,con);
