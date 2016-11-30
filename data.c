@@ -54,9 +54,9 @@ int create_table(MYSQL* con){
     finish_with_error(con);
    }
 }
-void create_account(char* user_name,char* password,int status,MYSQL* con){
+void create_account(char* user_name,char* password,MYSQL* con){
    char statement[100];
-   snprintf(statement,100,"INSERT INTO account VALUES ('%s','%s','%d')",user_name,password,status);
+   snprintf(statement,100,"INSERT INTO account VALUES ('%s','%s',0)",user_name,password);
    // printf("%s\n",statement );
    mysql_query(con,statement);
 }
@@ -70,6 +70,11 @@ void delete_account(char* user_name,MYSQL* con){
   snprintf(statement,100,"DELETE FROM account_info WHERE user_name = '%s'",user_name);
   mysql_query(con,statement);
 }
+void updata_status(char* user_name,int status,MYSQL* con){
+  char statement[200];
+  snprintf(statement,200,"UPDATE account SET status=%d WHERE user_name = '%s'",status,user_name);
+  mysql_query(con,statement);
+}
 int check_exits_user_name(char* user_name,MYSQL* con){
   char statement[100];
   snprintf(statement,100,"SELECT * FROM account WHERE user_name = '%s'",user_name);
@@ -80,6 +85,8 @@ int check_exits_user_name(char* user_name,MYSQL* con){
   }
   else return 1;
 }
+// 1:true
+//-1: false
 int check_password_from_user_name(char* user_name,char* password,MYSQL* con){
   char statement[100];
   snprintf(statement,100,"SELECT * FROM account WHERE user_name = '%s' AND pass = '%s'",user_name,password);
@@ -89,6 +96,8 @@ int check_password_from_user_name(char* user_name,char* password,MYSQL* con){
     return -1;
   else return 1;
 }
+// return 1 : status of account is online
+// -1 : status of account is offline
 int check_status_account(char* user_name,MYSQL* con){
   char statement[100];
   snprintf(statement,100,"SELECT status FROM account WHERE user_name='%s'",user_name);
@@ -96,8 +105,11 @@ int check_status_account(char* user_name,MYSQL* con){
   MYSQL_RES *result = mysql_store_result(con);
   MYSQL_ROW row;
   row = mysql_fetch_row(result);
-  printf("%s\n",row );
-  return 1;
+  // printf("%s\n",row[0] );
+  if(atoi(row[0]) == 1){
+    return 1;
+  }
+  else return -1;
 }
 void insert_item(char* item_name,int price,MYSQL* con){
   char statement[100];
@@ -137,11 +149,11 @@ void main(){
       finish_with_error(con);
    }
    create_table(con);
-   create_account("linh","linh123",0,con);
-   create_account("minh","minh123",0,con);
-   create_account("phuc","phuc123",0,con);
-   create_account("truong","truong123",1,con);
-   create_account("nam","nam123",1,con);
+   create_account("linh","linh123",con);
+   create_account("minh","minh123",con);
+   create_account("phuc","phuc123",con);
+   create_account("truong","truong123",con);
+   create_account("nam","nam123",con);
    insert_info("minh","nguyen tri minh","ha noi","ntm@gmail.com","0123456",con);
    insert_info("minh","nguyen tien truong","ha noi","ntt@gmail.com","123455",con);
    // printf("done\n");
@@ -156,8 +168,13 @@ void main(){
    insert_favorite("minh","sach2",con);
    insert_favorite("truong","sach1",con);
    insert_favorite("truong","sach1",con);
+   printf("%d\n",check_status_account("linh",con));
+   printf("%d\n",check_status_account("nam",con));
+   updata_status("nam",1,con);
+   printf("%d\n",check_status_account("nam",con) );
    // insert_cart("truong","sach1",5,con);
    // printf("%d\n",check_exits_user_name("minh",con) );
+   // printf("%d\n",check_exits_user_name("nam",con) );
    // printf("%d\n",check_password_from_user_name("minh","minh123",con) );
    // updata_info_account("minh","minh123","nguyen van minh","ha nam","nvm@gmail.com","1234",con);
    mysql_close(con);
