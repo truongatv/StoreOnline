@@ -33,7 +33,7 @@ int create_table(MYSQL* con){
   if(result != NULL){
     return 1;
   }
-   if (mysql_query(con, "CREATE TABLE account(user_name varchar(20) NOT NULL,pass varchar(10) NOT NULL,PRIMARY KEY(user_name));")) {      
+   if (mysql_query(con, "CREATE TABLE account(user_name varchar(20) NOT NULL,pass varchar(10) NOT NULL,status INT NOT NULL,PRIMARY KEY(user_name));")) {      
       printf("1\n");
       finish_with_error(con);
    }
@@ -54,9 +54,9 @@ int create_table(MYSQL* con){
     finish_with_error(con);
    }
 }
-void create_account(char* user_name,char* password,MYSQL* con){
+void create_account(char* user_name,char* password,int status,MYSQL* con){
    char statement[100];
-   snprintf(statement,100,"INSERT INTO account VALUES ('%s','%s')",user_name,password);
+   snprintf(statement,100,"INSERT INTO account VALUES ('%s','%s','%d')",user_name,password,status);
    // printf("%s\n",statement );
    mysql_query(con,statement);
 }
@@ -88,6 +88,16 @@ int check_password_from_user_name(char* user_name,char* password,MYSQL* con){
   if(result == NULL)
     return -1;
   else return 1;
+}
+int check_status_account(char* user_name,MYSQL* con){
+  char statement[100];
+  snprintf(statement,100,"SELECT status FROM account WHERE user_name='%s'",user_name);
+  mysql_query(con,statement);
+  MYSQL_RES *result = mysql_store_result(con);
+  MYSQL_ROW row;
+  row = mysql_fetch_row(result);
+  printf("%s\n",row );
+  return 1;
 }
 void insert_item(char* item_name,int price,MYSQL* con){
   char statement[100];
@@ -127,11 +137,11 @@ void main(){
       finish_with_error(con);
    }
    create_table(con);
-   create_account("linh","linh123",con);
-   create_account("minh","minh123",con);
-   create_account("phuc","phuc123",con);
-   create_account("truong","truong123",con);
-   create_account("nam","nam123",con);
+   create_account("linh","linh123",0,con);
+   create_account("minh","minh123",0,con);
+   create_account("phuc","phuc123",0,con);
+   create_account("truong","truong123",1,con);
+   create_account("nam","nam123",1,con);
    insert_info("minh","nguyen tri minh","ha noi","ntm@gmail.com","0123456",con);
    insert_info("minh","nguyen tien truong","ha noi","ntt@gmail.com","123455",con);
    // printf("done\n");
