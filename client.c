@@ -114,11 +114,29 @@ int main(){
 				break;
 			}
 			case 2:{
-				do{
+				LABEL3:do{
 					third_menu(choise);
 					i = atoi(choise);
 				} while (i <=  0 || i > 4);
 				switch(i){
+					case 1:{
+						Send_Request(client_sock,"501",result_code);
+						Show_Message(result_code,temp);
+						goto LABEL3;
+						break;
+					}
+					case 2:{
+						Send_Request(client_sock,"502",result_code);
+						Show_Message(result_code,temp);
+						goto LABEL3;
+						break;
+					}
+					case 3:{
+						Send_Request(client_sock,"503",result_code);
+						Show_Message(result_code,temp);
+						goto LABEL3;
+						break;
+					}
 					case 4:{
 						goto LABEL2;
 						break;
@@ -127,16 +145,38 @@ int main(){
 				break;
 			}
 			case 3:{
-				do{
+				LABEL4:do{
 					fourth_menu(choise);
 					i = atoi(choise);
 				} while (i <=  0 || i > 5);
 				switch(i){
+					case 1:{
+						Send_Request(client_sock,"601",result_code);
+						Show_Message(result_code,temp);
+						break;
+					}
+					case 2:{
+						Send_Request(client_sock,"602",result_code);
+						Show_Message(result_code,temp);
+						break;
+					}
+					case 3:{
+						Send_Request(client_sock,"603",result_code);
+						Show_Message(result_code,temp);
+						break;
+					}
+					case 4:{
+						Send_Request(client_sock,"604",result_code);
+						Show_Message(result_code,temp);
+						break;
+					}
 					case 5:{
 						goto LABEL2;
 						break;
 					}
 				}
+				goto LABEL4;
+				break;
 			}
 			case 4:{
 				Send_Request(client_sock,"301",result_code);
