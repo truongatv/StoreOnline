@@ -113,7 +113,30 @@ int check_status_account(char* user_name,MYSQL* con){
   }
   else return -1;
 }
-char* search_item(char* item_name,MYSQL* con){
+int check_item_in_favorite_list(char*user_name,char* item_name,MYSQL*con){
+  char statement[200];
+  snprintf(statement,200,"SELECT * FROM account_favorite WHERE user_name = '%s' and item_name = '%s';",user_name,item_name);
+  mysql_query(con,statement);
+  MYSQL_RES *result = mysql_store_result(con);
+  int row = mysql_num_rows(result);
+  if(row == 0){
+    return -1;
+  }
+  return 1;
+}
+int search_item(char* item_name,MYSQL *con){
+  char statement[200];
+  snprintf(statement,200,"SELECT * FROM item WHERE item_name = '%s'",item_name);
+  mysql_query(con,statement);
+  MYSQL_RES *result = mysql_store_result(con);
+  int row = mysql_num_rows(result);
+  if(row == 0){
+    return -1;
+  }
+  return 1;
+
+}
+char* search_item_contain_keyword(char* item_name,MYSQL* con){
   char statement[200];
   char* temp;
   temp =(char*)malloc(sizeof(char)*100);
@@ -146,7 +169,6 @@ void insert_item(char* item_name,int price,MYSQL* con){
 void insert_cart(char* user_name,char* item_name,int total,MYSQL* con){
   char statement[200];
   snprintf(statement,200,"INSERT INTO account_cart VALUES('%s','%s','%d')",user_name,item_name,total);
-  // printf("%s\n",statement );
   mysql_query(con,statement);
 }
 void insert_favorite(char* user_name,char* item_name,MYSQL* con){
@@ -161,34 +183,41 @@ void delete_favorite(char* user_name,char* item_name,MYSQL* con){
 }
 char* show_all_favorite(char* user_name,MYSQL* con){
   char statement[200];
-  int i=0;
   char* temp = (char*)malloc(sizeof(char)*400);
+  strcpy(temp,"");
   snprintf(statement,200,"SELECT item_name FROM account_favorite WHERE user_name = '%s'",user_name);
   mysql_query(con,statement);
   MYSQL_RES *result = mysql_store_result(con);
- 
-  // row = mysql_fetch_row(result);
-  // printf("row : %s\n",row[1]);
-  // row = mysql_fetch_row(result);
-  // printf("row: %s\n",row[1] );
-  int num_fields = mysql_num_fields(result);
-  MYSQL_ROW row;
-  printf("num_fields: %d\n",num_fields );
-  while ((row = mysql_fetch_row(result))) 
-  { 
-    // printf("%s\n", );
-    if(i==0){
-      strcpy(temp,row[0]);
-    }
-    else{
-      strcat(temp,"\n");
-      strcat(temp,row[0]);
-    }
-    // strcat(temp,"\n");
-    i++;
+  if(mysql_num_rows(result) == 0){
+    return " ";
   }
+  MYSQL_ROW row;
+  while ((row = mysql_fetch_row(result))){
+    strcat(temp,row[0]);
+    strcat(temp,"\n");
+  } 
   mysql_free_result(result);
   return temp;
+}
+int check_item_in_cart_list(char*user_name,char* item_name,MYSQL*con){
+  char statement[200];
+  snprintf(statement,200,"SELECT * FROM account_cart WHERE user_name = '%s' and item_name = '%s';",user_name,item_name);
+  mysql_query(con,statement);
+  MYSQL_RES *result = mysql_store_result(con);
+  int row = mysql_num_rows(result);
+  if(row == 0){
+    return -1;
+  }
+  return 1;
+}
+int check_item_number_in_cart_list(char* user_name,char* item_name,MYSQL*con){
+  char statement[200];
+  snprintf(statement,200,"SELECT total FROM account_cart WHERE user_name = '%s' and item_name = '%s';",user_name,item_name);
+  mysql_query(con,statement);
+  MYSQL_RES *result = mysql_store_result(con);
+  MYSQL_ROW row;
+  row = mysql_fetch_row(result);
+  return atoi(row[0]);
 }
 void delete_item_from_cart(char* user_name,char* item_name,MYSQL* con){
     char statement[100];
@@ -202,7 +231,9 @@ char* show_list_cart(char* user_name,MYSQL* con){
   mysql_query(con,statement);
   char* temp = (char*)malloc(sizeof(char)*400);
   MYSQL_RES* result = mysql_store_result(con);
-  int num_fields = mysql_num_fields(result);
+  if(mysql_num_rows(result) == 0){
+    return " ";
+  }
   MYSQL_ROW row;
   while(row = mysql_fetch_row(result)){
     if(i == 0 ){
@@ -216,13 +247,17 @@ char* show_list_cart(char* user_name,MYSQL* con){
   }
   return temp;
 }
+void update_item_number_in_cart_list(char* user_name,char* item_name,int number,MYSQL*con){
+  char statement[200];
+  snprintf(statement,200,"UPDATE account_cart SET total = %d WHERE user_name = '%s' and item_name = '%s'",number,user_name,item_name);
+  mysql_query(con,statement);
+}
 int get_price(char* item_name,MYSQL* con){
   char statement[100];
   snprintf(statement,100,"SELECT price FROM item WHERE item_name = '%s'",item_name);
   mysql_query(con,statement);
   MYSQL_RES* result = mysql_store_result(con);
   MYSQL_ROW row = mysql_fetch_row(result);
-  // printf("price: %d\n",atoi(row[0]) );
   return atoi(row[0]);
 }
 int get_total_cost(char* user_name,MYSQL* con){
