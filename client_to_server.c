@@ -68,14 +68,18 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 		}
 		case 601:{
 			// send user name + item + number to add to cart list
+			Send_Item(client_sock,request_code,result_code);
+			break;
 		}
 		case 602:{
 			// send user name + item + number to remove from cart list
-			
+			Send_Item(client_sock,request_code,result_code);
 			break;
 		}
 		case 603:{
 			// send user name to get all item from cart list
+			Send_State(client_sock,request_code,result_code);
+			break;
 		}
 		case 604:{
 			// send user name to get total cost
@@ -168,6 +172,9 @@ void Show_Message(char* respond,char* result){
 		case 553:{
 
 		}
+		case 555:{
+
+		}
 		case 650:{
 
 		}
@@ -188,16 +195,19 @@ void Show_Message(char* respond,char* result){
 		}
 		case 653:{
 			params = strtok(NULL,"//");
+			printf("%s\n", params);
 			break;
 		}
 		case 654:{
 			msg = strtok(NULL,"//");
-			params = strtok(NULL,"//");
-			
+			//params = strtok(NULL,"//");
+			printf("%s\n", msg);
+			//printf("%s\n", params);
 			break;
 		}
 		case 554:{
 			params = strtok(NULL,"//");
+			printf("%s\n", params);
 			break;
 		}
 	}
@@ -297,10 +307,12 @@ void Send_Item(int client_sock,char* request_code,char* result_code){
 	strcat(request,"//");
 	strcat(request,itemName);
 
-	if(strcmp(request_code,"601") == 0 || strcmp(request_code,"602") == 0){
+	if((strcmp(request_code,"601") == 0) || (strcmp(request_code,"602") == 0)){
+		
 		do{
-			printf("\nInsert item:");
+			printf("\nInsert number:");
 			scanf("%d",&i);
+			while(getchar()!='\n');
 		}while(i<=0);
 		char str[10];
 

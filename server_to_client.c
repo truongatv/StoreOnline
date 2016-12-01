@@ -53,10 +53,9 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 		case 401:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			//Find_Item_info(param2);
 			//TODO send back item info
 			temp = (char*)malloc(sizeof(char)*1024);
-			strcpy(temp,search_item(param2,con));
+			strcpy(temp,search_item_contain_keyword(param2,con));
 			if(strlen(temp) == 0){
 				Send_Message(server_sock,"451");
 			} else{
@@ -67,48 +66,123 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 		case 501:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			// int x = Find_Item_in_Favorite_list(param1,param2);
-			// //TODO
-			// if (x == 0){
-			// 	// not found
-			// 	Send_Message(server_sock,"551");
-			// 	Add_Item_To_Favorite_list(param1,param2);
-			// } else{
-			// 	// found
-			// 	Send_Message(server_sock,"550");
-			// }
+			int x = search_item(param2,con);
+			if(x == -1){
+				// wrong item name
+				Send_Message(server_sock,"555");
+			} else{
+				// item name is true
+				x = check_item_in_favorite_list(param1,param2,con);
+				if(x == -1){
+					// 
+					insert_favorite(param1,param2,con);
+					Send_Message(server_sock,"551");
+				} else{
+					// favorite list already has item
+					Send_Message(server_sock,"550");
+					break;
+				}
+
+			}
 			break;
 		}
 		case 502:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			// int x = Find_Item_in_Favorite_list(param1,param2);
-			// if(x == 0){
-			// 	// not found
-			// 	Send_Message(server_sock,"552");
-			// } else{
-			// 	//found
-			// 	Remove_Item_From_Favorite_list(param1,param2);
-			// 	Send_Message(server_sock,"553");
-			// }
+
+			int x = search_item(param2,con);
+			if(x == -1){
+				// wrong item name
+				Send_Message(server_sock,"555");
+			} else{
+				// item name is true
+				x = check_item_in_favorite_list(param1,param2,con);
+				if(x == -1){
+					// 
+					Send_Message(server_sock,"552");
+				} else{
+					// favorite list already has item
+					delete_favorite(param1,param2,con);
+					Send_Message(server_sock,"553");
+					break;
+				}
+
+			}
 			break;
 		}
 		case 503:{
 			param1 = strtok(NULL,"//");
 			//TODO get favorite list from username and send back
+			
+			temp = (char*)malloc(sizeof(char)*1024);
+			strcpy(temp,show_all_favorite(param1,con));
+			Send_Message(server_sock,"554");
 			break;
 		}
 		case 601:{
+			param1 = strtok(NULL,"//");
+			param2 = strtok(NULL,"//");
+			param3 = strtok(NULL,"//");
+			int x = search_item(param2,con);
+			if (x == -1){
+				Send_Message(server_sock,"555");
+			} else{
+				x = check_item_in_cart_list(param1,param2,con);
+				if (x == -1){
+					insert_cart(param1,param2,atoi(param3),con);
+					Send_Message(server_sock,"650");
 
+				} else{
+					x = check_item_number_in_cart_list(param1,param2,con);
+					x += atoi(param3);
+					update_item_number_in_cart_list(param1,param2,x,con);
+					Send_Message(server_sock,"650");
+				}
+			}
 			break;
 		}
 		case 602:{
+			param1 = strtok(NULL,"//");
+			param2 = strtok(NULL,"//");
+			param3 = strtok(NULL,"//");
+			int x = search_item(param2,con);
+			if (x == -1){
+				Send_Message(server_sock,"555");
+			} else{
+				x = check_item_in_cart_list(param1,param2,con);
+				if (x == -1){
+					Send_Message(server_sock,"652");
+				} else{
+					x = check_item_number_in_cart_list(param1,param2,con);
+					if (x < atoi(param3)){
+						Send_Message(server_sock,"652");
+					} else{
+						if(x == atoi(param3)){
+							delete_item_from_cart(param1,param2,con);
+							Send_Message(server_sock,"651");
+
+						}else{
+							x -= atoi(param3);
+							update_item_number_in_cart_list(param1,param2,x,con);
+							Send_Message(server_sock,"651");
+						}
+					}
+					
+				}
+			}
 			break;
 		}
 		case 603:{
+			param1 = strtok(NULL,"//");
+			temp = (char*)malloc(sizeof(char)*1024);
+			strcpy(temp,show_list_cart(param1,con));
+			Send_Message(server_sock,"653");
 			break;
 		}
 		case 604:{
+			param1 = strtok(NULL,"//");
+			sprintf(temp, "%d", get_total_cost(param1,con));
+			Send_Message(server_sock,"654");			
 			break;
 		}
 	}
@@ -188,6 +262,14 @@ void Send_Message(int server_sock,char* request_code){
 			strcat(request,"msg_success_remove_item_from_cart_list");
 			break;
 		}
+		case 554:{
+			strcat(request,temp);
+			break;
+		}
+		case 555:{
+			strcat(request,"msg_wrong_item_name");
+			break;
+		}
 		case 650:{
 			strcat(request,"msg_success_add_item_to_cart");
 			break;
@@ -200,6 +282,14 @@ void Send_Message(int server_sock,char* request_code){
 			strcat(request,"msg_error_when_remove_item_from_cart_list");
 			break;
 		}
+		case 653:{
+			strcat(request,temp);
+			break;
+		}
+		case 654:{
+			strcat(request,temp);
+			break;
+		}
 	}
 	printf("%s\n",request );
 	bytes_sent = send(server_sock,request,strlen(request),0);
@@ -207,19 +297,7 @@ void Send_Message(int server_sock,char* request_code){
 
 	}
 }
-// void Get_Message(int server_sock){
-// 	char* request = (char*)malloc(sizeof(char)*1024);
-// 	bytes_received = recv(server_sock,buff,1024,0);
-// 	if(bytes_received < 0){
-// 		//error
-// 	}
-// 	buff[bytes_received] = '\0';
-// 	strcpy(request,&buff[0]);
-// 	char* request_code = (char*)malloc(sizeof(char)*5);
-// 	request_code = strtok(request,"//");
-// 	user_name = strtok(NULL,"//");
 
-// }
 void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MYSQL* con){
 	int bytes_sent,bytes_received;
 	char buff[1024];
