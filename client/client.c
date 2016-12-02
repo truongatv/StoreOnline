@@ -1,21 +1,5 @@
 #include "client.h"
 
-void first_menu(char* choise){
-	printf("__________MENU_________\n\t1.Login\n\t2.SignUp\n\t3.Exit\n\nInsert your choise: ");
-	gets(choise);
-}
-void second_menu(char* choise){
-	printf("__________MENU_________\n\t1.Search Item\n\t2.Favorite List\n\t3.Cart List\n\t4.Logout\n\nInsert your choise: ");
-	gets(choise);
-}
-void third_menu(char* choise){
-	printf("__________FAVORITE LIST_________\n\t1.Add item to favorite list.\n\t2.Remove item from item list.\n\t3.My favorite list.\n\t4.Back.\n\nInsert your choise: ");
-	gets(choise);
-}
-void fourth_menu(char* choise){
-	printf("__________CART LIST_________\n\t1.Add item to cart list.\n\t2.Remove item from cart list\n\t3.My cart list\n\t4.Pay.\n\t5.Back\n\nInsert your choise: ");
-	gets(choise);
-}
 int main(){
 
 	int client_sock;
@@ -49,7 +33,7 @@ int main(){
 		puts(buff);
 	}
 	LABEL1:do{
-		clear();
+		// clear();
 		do{
 			first_menu(choise);
 			i = atoi(choise);
@@ -94,7 +78,7 @@ int main(){
 	if(strcmp(temp,"2") == 0){
 		printf("Welcome back!\n");
 		LABEL2:do{
-			clear();
+			// clear();
 			second_menu(choise);
 			i = atoi(choise);
 		} while (i <=  0 || i > 4);
@@ -107,7 +91,7 @@ int main(){
 			}
 			case 2:{
 				LABEL3:do{
-					clear();
+					// clear();
 					third_menu(choise);
 					i = atoi(choise);
 				} while (i <=  0 || i > 4);
@@ -139,7 +123,7 @@ int main(){
 			}
 			case 3:{
 				LABEL4:do{
-					clear();
+					// clear();
 					fourth_menu(choise);
 					i = atoi(choise);
 				} while (i <=  0 || i > 5);
@@ -173,13 +157,55 @@ int main(){
 				break;
 			}
 			case 4:{
-				Send_Request(client_sock,"301",result_code);
-				Show_Message(result_code,temp);
-				goto LABEL1;
+				LABEL5:do{
+					// clear();
+					fifth_menu(choise);
+					i = atoi(choise);
+				} while (i <=  0 || i > 5);
+				switch(i){
+					case 1:{
+						break;
+					}
+					case 2:{
+						break;
+					}
+					case 3:{
+						Send_Request(client_sock,"301",result_code);
+						Show_Message(result_code,temp);
+						goto LABEL1;
+						break;
+					}
+					case 4:{
+						goto LABEL2;
+						break;
+					}
+				}
+				
 				break;
 			}
 		}
 	}
 	close(client_sock);
 	return 0;
+}
+
+void first_menu(char* choise){
+	printf("__________MENU_________\n\t1.Login\n\t2.SignUp\n\t3.Exit\n\nInsert your choise: ");
+	gets(choise);
+}
+void second_menu(char* choise){
+	printf("__________MENU_________\n\t1.Search Item\n\t2.Favorite List\n\t3.Cart List\n\t4.Account\n\nInsert your choise: ");
+	gets(choise);
+}
+void third_menu(char* choise){
+	printf("__________MENU_________\n\n\t\t**Favorite**\n\t1.Add item to favorite list.\n\t2.Remove item from item list.\n\t3.My favorite list.\n\t4.Back.\n\nInsert your choise: ");
+	gets(choise);
+}
+void fourth_menu(char* choise){
+	printf("__________MENU_________\n\n\t\t**Cart**\n\t1.Add item to cart list.\n\t2.Remove item from cart list\n\t3.My cart list\n\t4.Pay.\n\t5.Back\n\nInsert your choise: ");
+	gets(choise);
+}
+void fifth_menu(char* choise){
+	printf("__________MENU_________\n\n\t\t**Account**\n\t1.My info\n\t2.Change info\n\t3.Logout\n\t4.Back\n\nInsert your choise: ");
+	gets(choise);
 }

@@ -18,6 +18,7 @@ void first_menu(char* choise);
 void second_menu(char* choise);
 void third_menu(char* choise);
 void fourth_menu(char* choise);
+void fifth_menu(char* choise);
 int main();
 
 #endif
