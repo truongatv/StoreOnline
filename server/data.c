@@ -227,7 +227,7 @@ void delete_item_from_cart(char* user_name,char* item_name,MYSQL* con){
 char* show_list_cart(char* user_name,MYSQL* con){
   char statement[100];
   int i=0;
-  snprintf(statement,100,"SELECT item_name FROM account_cart WHERE user_name = '%s'",user_name);
+  snprintf(statement,100,"SELECT item_name,total FROM account_cart WHERE user_name = '%s'",user_name);
   mysql_query(con,statement);
   char* temp = (char*)malloc(sizeof(char)*400);
   MYSQL_RES* result = mysql_store_result(con);
@@ -238,10 +238,14 @@ char* show_list_cart(char* user_name,MYSQL* con){
   while(row = mysql_fetch_row(result)){
     if(i == 0 ){
       strcpy(temp,row[0]);
+      strcat(temp,"\t");
+      strcat(temp,row[1]);
     }
     else {
       strcat(temp,"\n");
       strcat(temp,row[0]);
+      strcat(temp,"\t");
+      strcat(temp,row[1]);
     }
     i++;
   }
