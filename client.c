@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string.h>
-#include "client_to_server.c"
-#define PORT 5550
-
+#include "client.h"
 
 void first_menu(char* choise){
 	printf("__________MENU_________\n\t1.Login\n\t2.SignUp\n\t3.Exit\n\nInsert your choise: ");
@@ -59,6 +49,7 @@ int main(){
 		puts(buff);
 	}
 	LABEL1:do{
+		clear();
 		do{
 			first_menu(choise);
 			i = atoi(choise);
@@ -103,6 +94,7 @@ int main(){
 	if(strcmp(temp,"2") == 0){
 		printf("Welcome back!\n");
 		LABEL2:do{
+			clear();
 			second_menu(choise);
 			i = atoi(choise);
 		} while (i <=  0 || i > 4);
@@ -115,6 +107,7 @@ int main(){
 			}
 			case 2:{
 				LABEL3:do{
+					clear();
 					third_menu(choise);
 					i = atoi(choise);
 				} while (i <=  0 || i > 4);
@@ -146,6 +139,7 @@ int main(){
 			}
 			case 3:{
 				LABEL4:do{
+					clear();
 					fourth_menu(choise);
 					i = atoi(choise);
 				} while (i <=  0 || i > 5);
