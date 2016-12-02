@@ -1,17 +1,4 @@
-
-#include "data.c"
-#include "server_to_client.c"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/wait.h>
-#define PORT 5550
-#define BACKLOG 20
+#include "server.h"
 
 void sig_chld(int signo){
 	pid_t pid;
