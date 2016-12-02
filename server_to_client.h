@@ -10,10 +10,10 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/wait.h>
-#include "account.h"
-#include "account.c"
 
-void Get_UserName(int* server_sock);
-void Get_Passwd(int* server_sock, char* result_code);
+void Excute_Request(int server_sock,char* request_code,MYSQL*con);
+void Send_Message(int server_sock,char* request_code);
+void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MYSQL* con);
+void Send_Passwd_Respond(int server_sock, char* request_code, char* user_name,char* passwd,MYSQL*con);
 
 #endif
