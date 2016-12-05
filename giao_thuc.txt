@@ -20,6 +20,14 @@ Cart list
 	602//state//ItemName//number 	-- 		remove number of item from cart list 
 	603//state						-- 		show cart list 
 	604//state 						--		get total cost
+Account
+	701//state 						--		show my info
+	702//state//full_name
+	703//state//email
+	704//state//address
+	705//state//phone_num
+	706//state//new_pass
+	707//state//
 
 	server
 Login

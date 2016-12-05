@@ -283,7 +283,7 @@ void update_info_account(char* user_name,char* password,char* full_name,char* ad
   char statement[200];
   snprintf(statement,200,"UPDATE account_info SET full_name = '%s',address = '%s',email = '%s',sdt = '%s' WHERE user_name = '%s'",full_name,address,email,sdt,user_name);
   mysql_query(con,statement);
-  snprintf(statement,200,"UPDATA account SET pass = '%s' WHERE user_name = '%s'",password,user_name);
+  snprintf(statement,200,"UPDATE account SET pass = '%s' WHERE user_name = '%s'",password,user_name);
   mysql_query(con,statement);
 }
 // void main(){
