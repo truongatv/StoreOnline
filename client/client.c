@@ -167,6 +167,9 @@ int main(){
 						break;
 					}
 					case 2:{
+						// Send_Request(client_sock,"702",result_code);
+						// Show_Message(result_code,temp);
+						
 						break;
 					}
 					case 3:{
@@ -206,6 +209,6 @@ void fourth_menu(char* choise){
 	gets(choise);
 }
 void fifth_menu(char* choise){
-	printf("__________MENU_________\n\n\t\t**Account**\n\t1.My info\n\t2.Change info\n\t3.Logout\n\t4.Back\n\nInsert your choise: ");
+	printf("__________MENU_________\n\n\t\t**Account**\n\t1.My info\n\t2.Change full name\n\t3.Logout\n\t4.Back\n\nInsert your choise: ");
 	gets(choise);
 }

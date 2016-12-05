@@ -78,6 +78,9 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 			Send_State(client_sock,request_code,result_code);
 			break;
 		}
+		case 701:{
+			break;
+		}
 	}
 }
 void Show_Message(char* respond,char* result){
