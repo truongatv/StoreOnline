@@ -23,10 +23,10 @@ Cart list
 Account
 	701//state 						--		show my info
 	702//state//full_name
-	703//state//email
-	704//state//address
-	705//state//phone_num
-	706//state//new_pass
+	703//state//address
+	704//state//email
+	705//state//new_pass
+	706//state//new_phone
 	707//state//
 
 	server
