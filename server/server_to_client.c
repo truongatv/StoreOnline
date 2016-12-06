@@ -177,6 +177,41 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 			Send_Message(server_sock,"654");			
 			break;
 		}
+		case 701:{
+			param1 = strtok(NULL,"//");
+			temp = (char*)malloc(sizeof(char)*1024);
+			strcpy(temp,get_account_info(param1,con));
+			Send_Message(server_sock,"750");
+			break;
+		}
+		case 702:{
+			param1 = strtok(NULL,"//");
+			param2 = strtok(NULL,"//");
+			update_account_info(param1,"full_name",param2,con);
+			Send_Message(server_sock,"751");
+			break;
+		}
+		case 703:{
+			param1 = strtok(NULL,"//");
+			param2 = strtok(NULL,"//");
+			update_account_info(param1,"email",param2,con);
+			Send_Message(server_sock,"751");
+			break;
+		}
+		case 704:{
+			param1 = strtok(NULL,"//");
+			param2 = strtok(NULL,"//");
+			update_account_info(param1,"address",param2,con);
+			Send_Message(server_sock,"751");
+			break;
+		}
+		case 705:{
+			param1 = strtok(NULL,"//");
+			param2 = strtok(NULL,"//");
+			update_account_info(param1,"sdt",param2,con);
+			Send_Message(server_sock,"751");
+			break;
+		}
 	}
 
 }
@@ -280,6 +315,14 @@ void Send_Message(int server_sock,char* request_code){
 		}
 		case 654:{
 			strcat(request,temp);
+			break;
+		}
+		case 750:{
+			strcat(request,temp);
+			break;
+		}
+		case 751:{
+			strcat(request,"msg_success");
 			break;
 		}
 	}

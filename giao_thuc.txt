@@ -27,7 +27,6 @@ Account
 	704//state//address
 	705//state//phone_num
 	706//state//new_pass
-	707//state//
 
 	server
 Login
@@ -59,4 +58,8 @@ Cart list
 	652//msg_error_when_remove_item_from_cart_list
 	653//cart_list
 	654//cart_list//total_cost
+Account
+	750//account_info
+	751//msg_success
+	752//msg_duplicate_with_old_info
 */
