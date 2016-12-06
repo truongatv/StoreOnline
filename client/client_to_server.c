@@ -83,6 +83,7 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 			break;
 		}
 		case 702:{
+<<<<<<< HEAD
 			Send_Fullname(client_sock,request_code,result_code);
 			break;
 		}
@@ -100,6 +101,21 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 		}
 		case 706:{
 			Send_New_Phonenumber(client_sock,request_code,result_code);
+=======
+			Send_Info(client_sock,"full name",request_code,passwd,result_code);
+			break;
+		}
+		case 703:{
+			Send_Info(client_sock,"email",request_code,passwd,result_code);
+			break;
+		}
+		case 704:{
+			Send_Info(client_sock,"address",request_code,passwd,result_code);
+			break;
+		}
+		case 705:{
+			Send_Info(client_sock,"phone number",request_code,passwd,result_code);
+>>>>>>> a644ee7f88b070eedf02a219afe7ab86399818f0
 			break;
 		}
 	}
@@ -226,6 +242,21 @@ void Show_Message(char* respond,char* result){
 			printf("%s\n", params);
 			break;
 		}
+		case 750:{
+			params = strtok(NULL,"//");
+			printf("%s\n",params );
+			break;
+		}
+		case 751:{
+			params = strtok(NULL,"//");
+			printf("%s\n", params);
+			break;
+		}
+		case 752:{
+			params = strtok(NULL,"//");
+			printf("%s\n", params);
+			break;
+		}
 	}
 }
 // request_code == 101 || 201 || 301 || 603 || 604
@@ -287,6 +318,42 @@ void Send_Passwd(int client_sock,char* request_code,char* passwd,char* result_co
 	strcat(PassM,passwd);
 
 	//send request_code//username//passwd
+	
+	bytes_sent = send(client_sock,PassM,strlen(PassM),0);
+	if(bytes_sent < 0){
+		//error
+	}
+
+	bytes_received = recv(client_sock,buff,1024,0);
+	if(bytes_received < 0){
+		//error
+	}
+	buff[bytes_received] = '\0';
+	strcpy(result_code,&buff[0]);
+}
+
+void Send_Info(int client_sock,char* info_type,char* request_code,char* info,char* result_code){
+	int bytes_sent,bytes_received;
+	char buff[1024];
+
+	do{
+		printf("\nInsert %s:",info_type);
+		memset(buff,'\0',(strlen(buff)+1));
+		gets(buff);
+	}while((int)strlen(buff) == 0);
+
+
+	strcpy(info,&buff[0]);
+
+	char* PassM = (char*)malloc(sizeof(char)*1024);
+	
+	strcpy(PassM,request_code);
+	strcat(PassM,"//");
+	strcat(PassM,user_name_sent);
+	strcat(PassM,"//");
+	strcat(PassM,info);
+
+	//send request_code//username//info
 	
 	bytes_sent = send(client_sock,PassM,strlen(PassM),0);
 	if(bytes_sent < 0){

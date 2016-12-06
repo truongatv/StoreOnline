@@ -37,7 +37,7 @@ int create_table(MYSQL* con){
       printf("1\n");
       finish_with_error(con);
    }
-   if(mysql_query(con,"CREATE TABLE account_info(user_name varchar(20) NOT NULL,full_name varchar(30) NOT NULL,address varchar(30) NOT NULL,email varchar(30),sdt varchar(12) NOT NULL,foreign key(user_name) references account(user_name))")){
+   if(mysql_query(con,"CREATE TABLE account_info(user_name varchar(20) NOT NULL,full_name varchar(30) NOT NULL,address varchar(30) NOT NULL,email varchar(30),phone_number varchar(12) NOT NULL,foreign key(user_name) references account(user_name))")){
     printf("2\n");
     finish_with_error(con);
    }
@@ -60,9 +60,9 @@ void create_account(char* user_name,char* password,MYSQL* con){
    // printf("%s\n",statement );
    mysql_query(con,statement);
 }
-void insert_info(char* user_name,char* full_name,char* address,char* email,char* sdt,MYSQL* con ){
+void insert_info(char* user_name,char* full_name,char* address,char* email,char* phone_number,MYSQL* con ){
   char statement[200];
-  snprintf(statement,200,"INSERT INTO account_info VALUES('%s','%s','%s','%s','%s')",user_name,full_name,address,email,sdt);
+  snprintf(statement,200,"INSERT INTO account_info VALUES('%s','%s','%s','%s','%s')",user_name,full_name,address,email,phone_number);
   mysql_query(con,statement);
 }
 void delete_account(char* user_name,MYSQL* con){
@@ -279,13 +279,61 @@ int get_total_cost(char* user_name,MYSQL* con){
   }
   return total;
 }
-void update_info_account(char* user_name,char* password,char* full_name,char* address,char* email,char* sdt,MYSQL* con){
+
+void update_account_info(char* user_name,char* info_column,char* new_info,MYSQL* con){
   char statement[200];
-  snprintf(statement,200,"UPDATE account_info SET full_name = '%s',address = '%s',email = '%s',sdt = '%s' WHERE user_name = '%s'",full_name,address,email,sdt,user_name);
+
+  snprintf(statement,200,"SELECT * from account_info WHERE user_name = '%s';",user_name);
   mysql_query(con,statement);
-  snprintf(statement,200,"UPDATE account SET pass = '%s' WHERE user_name = '%s'",password,user_name);
-  mysql_query(con,statement);
+  MYSQL_RES* result = mysql_store_result(con);
+  if(mysql_num_rows(result) != 0){
+    snprintf(statement,200,"UPDATE account_info SET %s  = '%s' WHERE user_name = '%s';",info_column,new_info,user_name);
+    mysql_query(con,statement);
+  } else{
+    if(strcmp(info_column,"full_name") == 0){
+      insert_info(user_name,new_info,"","","",con);
+    } else{
+      if(strcmp(info_column,"email") == 0){
+        insert_info(user_name,"","",new_info,"",con );
+      } else{
+        if(strcmp(info_column,"address") == 0){
+          insert_info(user_name,"",new_info,"","",con );
+        } else{
+          if(strcmp(info_column,"phone_number") == 0){
+            insert_info(user_name,"","","",new_info,con);
+          }
+        }
+      }
+    }
+  }
 }
+
+char* get_account_info(char* user_name,MYSQL* con){
+  char statement[200];
+
+  snprintf(statement,200,"SELECT * from account_info WHERE user_name = '%s';",user_name);
+  mysql_query(con,statement);
+
+  MYSQL_RES* _result = mysql_store_result(con);
+  MYSQL_ROW row;
+  row = mysql_fetch_row(_result);
+
+  char* result = (char*)malloc(sizeof(char)*1024);
+  strcpy(result,"\nFull name: ");
+  strcat(result,row[1]);
+  strcat(result,"\nAddress: ");
+  strcat(result,row[2]);
+  strcat(result,"\nEmail: ");
+  strcat(result,row[3]);
+  strcat(result,"\nPhone Number: ");
+  strcat(result,row[4]);
+  return result;
+}
+
+
+
+
+
 // void main(){
 //    MYSQL *con = mysql_init(NULL);
 //    if (con == NULL) 
