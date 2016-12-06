@@ -59,12 +59,6 @@ int main(){
 				if(strcmp(temp,"1") == 0){
 					Send_Request(client_sock,"202",result_code);
 					Show_Message(result_code,temp);
-					//add acc_info
-					Send_Request(client_sock,"702",result_code);
-					Send_Request(client_sock,"703",result_code);
-					Send_Request(client_sock,"704",result_code);
-					Send_Request(client_sock,"705",result_code);
-
 				}
 				break;
 			}
@@ -172,7 +166,6 @@ int main(){
 					case 1:{
 						Send_Request(client_sock,"701",result_code);
 						Show_Message(result_code,temp);
-<<<<<<< HEAD
 						break;
 					}
 					case 2:{
@@ -185,36 +178,17 @@ int main(){
 						switch(i){
 							case 1: {
 								//change fullname
-=======
-						
-						goto LABEL5;
-						break;
-					}
-					case 2:{
-						do{
-							// clear();
-							sixth_menu(choise);
-							i = atoi(choise);
-						} while (i <=  0 || i > 6);
-
-						switch(i){
-							case 1:{
->>>>>>> a644ee7f88b070eedf02a219afe7ab86399818f0
 								Send_Request(client_sock,"702",result_code);
 								Show_Message(result_code,temp);
 								break;
 							}
 							case 2:{
-<<<<<<< HEAD
 								//change address
-=======
->>>>>>> a644ee7f88b070eedf02a219afe7ab86399818f0
 								Send_Request(client_sock,"703",result_code);
 								Show_Message(result_code,temp);
 								break;
 							}
 							case 3:{
-<<<<<<< HEAD
 								//change email
 								Send_Request(client_sock,"704",result_code);
 								Show_Message(result_code,temp);
@@ -233,23 +207,6 @@ int main(){
 								break;
 							}
 						}
-=======
-								Send_Request(client_sock,"704",result_code);
-								Show_Message(result_code,temp);								
-								break;
-							}
-							case 4:{
-								Send_Request(client_sock,"705",result_code);
-								Show_Message(result_code,temp);								
-								break;
-							}
-							case 5:{
-								goto LABEL5;
-								break;
-							}
-						}
-						goto LABEL5;
->>>>>>> a644ee7f88b070eedf02a219afe7ab86399818f0
 						break;
 					}
 					case 3:{
@@ -289,18 +246,10 @@ void fourth_menu(char* choise){
 	gets(choise);
 }
 void fifth_menu(char* choise){
-<<<<<<< HEAD
 	printf("__________MENU_________\n\n\t\t**Account**\n\t1.My info\n\t2.Change info\n\t3.Logout\n\t4.Back\n\nInsert your choise: ");
 	gets(choise);
 }
 void six_menu(char* choise){
 	printf("__________MENU_________\n\n\t\t**Change Info**\n\t1.Change full name\n\t2.Change address\n\t3.Change email\n\t4.Change Password\n\t5.Change phone number\n\nInsert your choise:");
-=======
-	printf("__________MENU_________\n\n\t\t**Account**\n\t1.My info\n\t2.Change account info\n\t3.Logout\n\t4.Back\n\nInsert your choise: ");
-	gets(choise);
-}
-void sixth_menu(char* choise){
-	printf("__________MENU_________\n\n\t\t**Change Account Info**\n\t1.Full Name\n\t2.Email\n\t3.Address\n\t4.Phone Number\n\t5.Back\n\nInsert your choise:" );
->>>>>>> a644ee7f88b070eedf02a219afe7ab86399818f0
 	gets(choise);
 }

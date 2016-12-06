@@ -83,7 +83,6 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 			break;
 		}
 		case 702:{
-<<<<<<< HEAD
 			Send_Fullname(client_sock,request_code,result_code);
 			break;
 		}
@@ -101,21 +100,6 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 		}
 		case 706:{
 			Send_New_Phonenumber(client_sock,request_code,result_code);
-=======
-			Send_Info(client_sock,"full name",request_code,passwd,result_code);
-			break;
-		}
-		case 703:{
-			Send_Info(client_sock,"email",request_code,passwd,result_code);
-			break;
-		}
-		case 704:{
-			Send_Info(client_sock,"address",request_code,passwd,result_code);
-			break;
-		}
-		case 705:{
-			Send_Info(client_sock,"phone number",request_code,passwd,result_code);
->>>>>>> a644ee7f88b070eedf02a219afe7ab86399818f0
 			break;
 		}
 	}
