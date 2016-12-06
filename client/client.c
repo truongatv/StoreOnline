@@ -59,6 +59,12 @@ int main(){
 				if(strcmp(temp,"1") == 0){
 					Send_Request(client_sock,"202",result_code);
 					Show_Message(result_code,temp);
+					//add acc_info
+					Send_Request(client_sock,"702",result_code);
+					Send_Request(client_sock,"703",result_code);
+					Send_Request(client_sock,"704",result_code);
+					Send_Request(client_sock,"705",result_code);
+
 				}
 				break;
 			}
@@ -164,12 +170,46 @@ int main(){
 				} while (i <=  0 || i > 5);
 				switch(i){
 					case 1:{
+						Send_Request(client_sock,"701",result_code);
+						Show_Message(result_code,temp);
+						
+						goto LABEL5;
 						break;
 					}
 					case 2:{
-						// Send_Request(client_sock,"702",result_code);
-						// Show_Message(result_code,temp);
-						
+						do{
+							// clear();
+							sixth_menu(choise);
+							i = atoi(choise);
+						} while (i <=  0 || i > 6);
+
+						switch(i){
+							case 1:{
+								Send_Request(client_sock,"702",result_code);
+								Show_Message(result_code,temp);
+								break;
+							}
+							case 2:{
+								Send_Request(client_sock,"703",result_code);
+								Show_Message(result_code,temp);
+								break;
+							}
+							case 3:{
+								Send_Request(client_sock,"704",result_code);
+								Show_Message(result_code,temp);								
+								break;
+							}
+							case 4:{
+								Send_Request(client_sock,"705",result_code);
+								Show_Message(result_code,temp);								
+								break;
+							}
+							case 5:{
+								goto LABEL5;
+								break;
+							}
+						}
+						goto LABEL5;
 						break;
 					}
 					case 3:{
@@ -209,6 +249,10 @@ void fourth_menu(char* choise){
 	gets(choise);
 }
 void fifth_menu(char* choise){
-	printf("__________MENU_________\n\n\t\t**Account**\n\t1.My info\n\t2.Change full name\n\t3.Logout\n\t4.Back\n\nInsert your choise: ");
+	printf("__________MENU_________\n\n\t\t**Account**\n\t1.My info\n\t2.Change account info\n\t3.Logout\n\t4.Back\n\nInsert your choise: ");
+	gets(choise);
+}
+void sixth_menu(char* choise){
+	printf("__________MENU_________\n\n\t\t**Change Account Info**\n\t1.Full Name\n\t2.Email\n\t3.Address\n\t4.Phone Number\n\t5.Back\n\nInsert your choise:" );
 	gets(choise);
 }
