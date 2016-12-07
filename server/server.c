@@ -70,7 +70,7 @@ int main(){
 				}
 				else{
 					recv_data[bytes_received] = '\0';
-					puts(recv_data);
+					printf("\nReceive from %s, data: %s.\n",inet_ntoa(client.sin_addr), recv_data);
 				}
 				char* request = (char*)malloc(sizeof(char)*1024);
 				strcpy(request,&recv_data[0]);

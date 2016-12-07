@@ -212,6 +212,19 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 			Send_Message(server_sock,"751");
 			break;
 		}
+		case 706:{
+			param1 = strtok(NULL,"//");
+			param2 = strtok(NULL,"//");
+			int x = check_password_from_user_name(param1,param2,con);
+			if(x == 1){
+				// duplicate passswd
+				Send_Message(server_sock,"752");
+			} else{
+				update_account_password(param1,param2,con);
+				Send_Message(server_sock,"751");
+			}
+			break;
+		}
 	}
 
 }
@@ -325,8 +338,12 @@ void Send_Message(int server_sock,char* request_code){
 			strcat(request,"msg_success");
 			break;
 		}
+		case 752:{
+			strcat(request,"msg_duplicate_with_old_info");
+			break;
+		}
 	}
-	printf("%s\n",request );
+	printf("Send: %s\n",request );
 	bytes_sent = send(server_sock,request,strlen(request),0);
 	if(bytes_sent < 0){
 
@@ -341,7 +358,7 @@ void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MY
 
 	//find username
 	int result = check_exits_user_name(user_name,con);
-	printf("%d\n",result );
+
 	if(result == -1){
 		// not found user name
 		switch(i){

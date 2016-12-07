@@ -99,7 +99,7 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 			break;
 		}
 		case 706:{
-			Send_Info(client_sock,"password",request_code,passwd,result_code);
+			Send_Info(client_sock,"new password",request_code,passwd,result_code);
 			break;
 		}
 	}
@@ -250,7 +250,7 @@ void Send_UserName(int client_sock,char*request_code,char* result_code){
 		printf("\nInsert userid:");
 		memset(buff,'\0',(strlen(buff)+1));
 		gets(buff);
-	}while((int)strlen(buff) == 0 || );
+	}while((int)strlen(buff) == 0);
 
 	user_name_sent = (char*)malloc(sizeof(char)*50);
 	strcpy(user_name_sent,&buff[0]);
