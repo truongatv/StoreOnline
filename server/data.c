@@ -1,4 +1,3 @@
-
 #include  <mysql/mysql.h>
 #include <stdio.h>
 
@@ -234,6 +233,7 @@ char* show_list_cart(char* user_name,MYSQL* con){
   if(mysql_num_rows(result) == 0){
     return " ";
   }
+
   MYSQL_ROW row;
   while(row = mysql_fetch_row(result)){
     if(i == 0 ){

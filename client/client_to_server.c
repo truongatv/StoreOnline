@@ -83,23 +83,19 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 			break;
 		}
 		case 702:{
-			Send_Fullname(client_sock,request_code,result_code);
+			Send_Info(client_sock,"full name",request_code,passwd,result_code);
 			break;
 		}
 		case 703:{
-			Send_Address(client_sock,request_code,result_code);
+			Send_Info(client_sock,"email",request_code,passwd,result_code);
 			break;
 		}
 		case 704:{
-			Send_Email(client_sock,request_code,result_code);
+			Send_Info(client_sock,"address",request_code,passwd,result_code);
 			break;
 		}
 		case 705:{
-			Send_New_Password(client_sock,request_code,result_code);
-			break;
-		}
-		case 706:{
-			Send_New_Phonenumber(client_sock,request_code,result_code);
+			Send_Info(client_sock,"phone number",request_code,passwd,result_code);
 			break;
 		}
 	}
@@ -404,180 +400,3 @@ void Send_Item(int client_sock,char* request_code,char* result_code){
 	strcpy(result_code,&buff[0]);	
 }
 
-
-void Send_Fullname(int client_sock,char* request_code,char* result_code){
-	char* fullname = (char*)malloc(sizeof(char)*1024);
-	int bytes_sent,bytes_received;
-	char buff[1024];
-	int i;
-	do{
-		printf("\nInsert new Fullname:");
-		memset(buff,'\0',(strlen(buff)+1));
-		gets(buff);
-	}while((int)strlen(buff) == 0);
-
-	strcpy(fullname,&buff[0]);
-
-	char* request = (char*) malloc(sizeof(char)*1024);
-
-	strcpy(request,request_code);
-	strcat(request,"//");
-	strcat(request,user_name_sent);
-	strcat(request,"//");
-	strcat(request,fullname);
-
-	//send request_code//username//fullname
-	
-	bytes_sent = send(client_sock,request,strlen(request),0);
-	if(bytes_sent < 0){
-		//error
-	}
-
-	bytes_received = recv(client_sock,buff,1024,0);
-	if(bytes_received < 0){
-		//error
-	}
-	buff[bytes_received] = '\0';
-	strcpy(result_code,&buff[0]);
-}
-
-void Send_Address(int client_sock,char* request_code,char* result_code){
-	char* address = (char*)malloc(sizeof(char)*1024);
-	int bytes_sent,bytes_received;
-	char buff[1024];
-	int i;
-	do{
-		printf("\nInsert new address:");
-		memset(buff,'\0',(strlen(buff)+1));
-		gets(buff);
-	}while((int)strlen(buff) == 0);
-
-	strcpy(address,&buff[0]);
-
-	char* request = (char*) malloc(sizeof(char)*1024);
-
-	strcpy(request,request_code);
-	strcat(request,"//");
-	strcat(request,user_name_sent);
-	strcat(request,"//");
-	strcat(request,address);
-
-	//send request_code//username//address
-	
-	bytes_sent = send(client_sock,request,strlen(request),0);
-	if(bytes_sent < 0){
-		//error
-	}
-
-	bytes_received = recv(client_sock,buff,1024,0);
-	if(bytes_received < 0){
-		//error
-	}
-	buff[bytes_received] = '\0';
-	strcpy(result_code,&buff[0]);
-}
-void Send_Email(int client_sock,char* request_code,char* result_code){
-	char* email = (char*)malloc(sizeof(char)*1024);
-	int bytes_sent,bytes_received;
-	char buff[1024];
-	int i;
-	do{
-		printf("\nInsert new email:");
-		memset(buff,'\0',(strlen(buff)+1));
-		gets(buff);
-	}while((int)strlen(buff) == 0);
-
-	strcpy(email,&buff[0]);
-
-	char* request = (char*) malloc(sizeof(char)*1024);
-
-	strcpy(request,request_code);
-	strcat(request,"//");
-	strcat(request,user_name_sent);
-	strcat(request,"//");
-	strcat(request,email);
-
-	//send request_code//username//email
-	
-	bytes_sent = send(client_sock,request,strlen(request),0);
-	if(bytes_sent < 0){
-		//error
-	}
-
-	bytes_received = recv(client_sock,buff,1024,0);
-	if(bytes_received < 0){
-		//error
-	}
-	buff[bytes_received] = '\0';
-	strcpy(result_code,&buff[0]);
-}
-void Send_New_Password(int client_sock,char* request_code,char* result_code){
-	char* passwd = (char*)malloc(sizeof(char)*1024);
-	int bytes_sent,bytes_received;
-	char buff[1024];
-	int i;
-	do{
-		printf("\nInsert new Password:");
-		memset(buff,'\0',(strlen(buff)+1));
-		gets(buff);
-	}while((int)strlen(buff) == 0);
-
-	strcpy(passwd,&buff[0]);
-
-	char* request = (char*) malloc(sizeof(char)*1024);
-
-	strcpy(request,request_code);
-	strcat(request,"//");
-	strcat(request,user_name_sent);
-	strcat(request,"//");
-	strcat(request,passwd);
-
-	//send request_code//username//password
-	
-	bytes_sent = send(client_sock,request,strlen(request),0);
-	if(bytes_sent < 0){
-		//error
-	}
-
-	bytes_received = recv(client_sock,buff,1024,0);
-	if(bytes_received < 0){
-		//error
-	}
-	buff[bytes_received] = '\0';
-	strcpy(result_code,&buff[0]);
-}
-void Send_New_Phonenumber(int client_sock,char* request_code,char* result_code){
-	char* phone = (char*)malloc(sizeof(char)*1024);
-	int bytes_sent,bytes_received;
-	char buff[1024];
-	int i;
-	do{
-		printf("\nInsert new Phone number:");
-		memset(buff,'\0',(strlen(buff)+1));
-		gets(buff);
-	}while((int)strlen(buff) == 0);
-
-	strcpy(phone,&buff[0]);
-
-	char* request = (char*) malloc(sizeof(char)*1024);
-
-	strcpy(request,request_code);
-	strcat(request,"//");
-	strcat(request,user_name_sent);
-	strcat(request,"//");
-	strcat(request,phone);
-
-	//send request_code//username//phone number
-	
-	bytes_sent = send(client_sock,request,strlen(request),0);
-	if(bytes_sent < 0){
-		//error
-	}
-
-	bytes_received = recv(client_sock,buff,1024,0);
-	if(bytes_received < 0){
-		//error
-	}
-	buff[bytes_received] = '\0';
-	strcpy(result_code,&buff[0]);
-}

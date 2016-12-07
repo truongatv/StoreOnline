@@ -11,7 +11,7 @@
 #include <string.h>
 #include "client_to_server.c"
 
-#define PORT 6550
+#define PORT 5550
 #define clear() printf("\033[H\033[J")
 
 void first_menu(char* choise);
@@ -19,6 +19,7 @@ void second_menu(char* choise);
 void third_menu(char* choise);
 void fourth_menu(char* choise);
 void fifth_menu(char* choise);
+void sixth_menu(char* choise);
 int main();
 
 #endif

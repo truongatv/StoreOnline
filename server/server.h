@@ -12,7 +12,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/wait.h>
-#define PORT 6550
+#define PORT 5550
 #define BACKLOG 20
 
 void sig_chld(int signo);
