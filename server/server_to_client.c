@@ -3,7 +3,7 @@
 int retry_times = 0;
 char* temp;
 void Excute_Request(int server_sock,char* request_code,MYSQL*con){
-	int bytes_received,bytes_sent;
+
 	char buff[1024];
 
 	char* code = (char*)malloc(sizeof(char)*10);
@@ -231,7 +231,7 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 void Send_Message(int server_sock,char* request_code){
 
 	int i = atoi(request_code);
-	int bytes_sent,bytes_received;
+
 	char* request = (char*) malloc(sizeof(char)*1024);
 	strcpy(request,request_code);
 	strcat(request,"//");
@@ -344,14 +344,16 @@ void Send_Message(int server_sock,char* request_code){
 		}
 	}
 	printf("Send: %s\n",request );
+	int bytes_sent;
+
 	bytes_sent = send(server_sock,request,strlen(request),0);
 	if(bytes_sent < 0){
-
+		printf("Error!!Can't send data to client!\n");
 	}
 }
 
 void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MYSQL* con){
-	int bytes_sent,bytes_received;
+	
 	char buff[1024];
 	
 	int i = atoi(request_code);
@@ -419,7 +421,7 @@ void Send_UserName_Respond(int server_sock,char* request_code,char* user_name,MY
 }
 
 void Send_Passwd_Respond(int server_sock, char* request_code, char* user_name,char* passwd,MYSQL*con){
-	int bytes_sent,bytes_received;
+
 	char buff[1024];
 	int i = atoi(request_code);
 	int result = check_password_from_user_name(user_name,passwd,con);

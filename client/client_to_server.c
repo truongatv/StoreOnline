@@ -3,7 +3,7 @@
 char* user_name_sent;
 
 void Send_Request(int client_sock,char* request_code,char* result_code){
-	int bytes_sent, bytes_received;
+
 	int int_request_code;
 	int_request_code = atoi(request_code);
 
@@ -271,10 +271,16 @@ void Send_State(int client_sock,char* request_code,char* result_code){
 	bytes_sent = send(client_sock,request,strlen(request),0);
 	if(bytes_sent < 0){
 		//error
+		printf("Error!!Can't send data to server!\n");
+		close(client_sock);
+		return;
 	}
 	bytes_received = recv(client_sock,buff,1024,0);
 	if(bytes_received < 0){
 		//error
+		printf("Error!!Can't recv data from server!\n");
+		close(client_sock);
+		return;
 	}
 	buff[bytes_received] = '\0';
 	strcpy(result_code,&buff[0]);
@@ -306,11 +312,17 @@ void Send_Passwd(int client_sock,char* request_code,char* passwd,char* result_co
 	bytes_sent = send(client_sock,PassM,strlen(PassM),0);
 	if(bytes_sent < 0){
 		//error
+		printf("Error!!Can't send data to server!\n");
+		close(client_sock);
+		return;
 	}
 
 	bytes_received = recv(client_sock,buff,1024,0);
 	if(bytes_received < 0){
 		//error
+		printf("Error!!Can't recv data from server!\n");
+		close(client_sock);
+		return;
 	}
 	buff[bytes_received] = '\0';
 	strcpy(result_code,&buff[0]);
@@ -342,11 +354,17 @@ void Send_Info(int client_sock,char* info_type,char* request_code,char* info,cha
 	bytes_sent = send(client_sock,PassM,strlen(PassM),0);
 	if(bytes_sent < 0){
 		//error
+		printf("Error!!Can't send data to server!\n");
+		close(client_sock);
+		return;
 	}
 
 	bytes_received = recv(client_sock,buff,1024,0);
 	if(bytes_received < 0){
 		//error
+		printf("Error!!Can't recv data from server!\n");
+		close(client_sock);
+		return;
 	}
 	buff[bytes_received] = '\0';
 	strcpy(result_code,&buff[0]);
@@ -393,11 +411,17 @@ void Send_Item(int client_sock,char* request_code,char* result_code){
 	bytes_sent = send(client_sock,request,strlen(request),0);
 	if(bytes_sent < 0){
 		//error
+		printf("Error!!Can't recv data from server!\n");
+		close(client_sock);
+		return;
 	}
 
 	bytes_received = recv(client_sock,buff,1024,0);
 	if(bytes_received < 0){
 		//error
+		printf("Error!!Can't recv data from server!\n");
+		close(client_sock);
+		return;
 	}
 
 	buff[bytes_received] = '\0';
