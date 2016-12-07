@@ -1,3 +1,4 @@
+
 #include  <mysql/mysql.h>
 #include <stdio.h>
 
@@ -233,7 +234,6 @@ char* show_list_cart(char* user_name,MYSQL* con){
   if(mysql_num_rows(result) == 0){
     return " ";
   }
-
   MYSQL_ROW row;
   while(row = mysql_fetch_row(result)){
     if(i == 0 ){
@@ -329,7 +329,11 @@ char* get_account_info(char* user_name,MYSQL* con){
   strcat(result,row[4]);
   return result;
 }
-
+void update_account_password(char* user_name,char* newpass,MYSQL* con){
+  char statement[200];
+  snprintf(statement,200,"UPDATE account set pass = '%s' WHERE user_name = '%s'",newpass,user_name);
+  mysql_query(con,statement);
+}
 
 
 

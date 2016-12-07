@@ -205,6 +205,11 @@ int main(){
 								break;
 							}
 							case 5:{
+								Send_Request(client_sock,"706",result_code);
+								Show_Message(result_code,temp);
+								break;
+							}
+							case 6:{
 								goto LABEL5;
 								break;
 							}
@@ -253,6 +258,6 @@ void fifth_menu(char* choise){
 	gets(choise);
 }
 void sixth_menu(char* choise){
-	printf("__________MENU_________\n\n\t\t**Change Account Info**\n\t1.Full Name\n\t2.Email\n\t3.Address\n\t4.Phone Number\n\t5.Back\n\nInsert your choise:" );
+	printf("__________MENU_________\n\n\t\t**Change Account Info**\n\t1.Full Name\n\t2.Email\n\t3.Address\n\t4.Phone Number\n\t5.Password\n\t6.Back\n\nInsert your choise:" );
 	gets(choise);
 }
