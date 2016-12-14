@@ -221,6 +221,16 @@ void Show_Message(char* respond,char* result){
 			//printf("%s\n", params);
 			break;
 		}
+		case 655:{
+			msg = strtok(NULL,"//");
+			printf("%s\n", msg);
+			break;
+		}
+		case 556:{
+			msg = strtok(NULL,"//");
+			printf("%s\n", msg);
+			break;
+		}
 		case 554:{
 			params = strtok(NULL,"//");
 			printf("%s\n", params);
