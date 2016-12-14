@@ -318,7 +318,7 @@ char* get_account_info(char* user_name,MYSQL* con){
   MYSQL_ROW row;
   row = mysql_fetch_row(_result);
 
-  char* result = (char*)malloc(sizeof(char)*1024);
+  char* result = (char*)malloc(sizeof(char)*1024);  
   strcpy(result,"\nFull name: ");
   strcat(result,row[1]);
   strcat(result,"\nAddress: ");

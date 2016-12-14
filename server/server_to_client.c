@@ -216,7 +216,7 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 		case 705:{
 			param1 = strtok(NULL,"//");
 			param2 = strtok(NULL,"//");
-			update_account_info(param1,"sdt",param2,con);
+			update_account_info(param1,"phone_number",param2,con);
 			Send_Message(server_sock,"751");
 			break;
 		}

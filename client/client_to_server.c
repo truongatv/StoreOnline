@@ -304,7 +304,7 @@ void Send_Passwd(int client_sock,char* request_code,char* passwd,char* result_co
 		printf("\nInsert passwd:");
 		memset(buff,'\0',(strlen(buff)+1));
 		gets(buff);
-	}while((int)strlen(buff) == 0);
+	}while((int)strlen(buff) == 0 || strlen(buff)>10 || strstr(buff," ")!=NULL);
 
 
 	strcpy(passwd,&buff[0]);
@@ -342,10 +342,17 @@ void Send_Info(int client_sock,char* info_type,char* request_code,char* info,cha
 	int bytes_sent,bytes_received;
 	char buff[1024];
 
-	do{
+	loop : do{
 		printf("\nInsert %s:",info_type);
 		memset(buff,'\0',(strlen(buff)+1));
 		gets(buff);
+		if(!strcmp("email",info_type) && strstr(buff," ")!=NULL){
+			goto loop;
+		}
+		if(!strcmp("phone number",info_type)){
+			if(strspn(buff,"0123456789") != strlen(buff))
+				goto loop;
+		}
 	}while((int)strlen(buff) == 0);
 
 
