@@ -336,8 +336,14 @@ void Send_Info(int client_sock,char* info_type,char* request_code,char* info,cha
 		printf("\nInsert %s:",info_type);
 		memset(buff,'\0',(strlen(buff)+1));
 		gets(buff);
-		if(!strcmp("email",info_type) && strstr(buff," ")!=NULL){
-			goto loop;
+		// if(!strcmp("email",info_type) && strstr(buff," ")!=NULL){
+		// 	goto loop;
+		// }
+		if(!strcmp("email",info_type)){
+			printf("number: %d\n", strchr(buff,"@"));
+			if(strstr(buff," ")!=NULL || strstr(buff,"@")==NULL){
+				goto loop;
+			}
 		}
 		if(!strcmp("phone number",info_type)){
 			if(strspn(buff,"0123456789") != strlen(buff))
