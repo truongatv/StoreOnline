@@ -1,0 +1,27 @@
+#ifndef _MSG_H_
+#define _MSG_H_
+
+#define KEY_MSG_NOT_MATCH_USER_NAME "Wrong username, retry later!"
+#define KEY_MSG_ACC_CURRENTLY_ONLINE  "This acc is online now"
+#define KEY_MSG_ACC_CURRENTLY_OFFLINE  "This acc is offline now"
+#define KEY_MSG_NOT_MATCH_PASSWD  "Invalid password!!!"
+#define KEY_MSG_MATCH_USERNAME_PASSWD  "Correct username and password"
+#define KEY_MSG_RETRY_OVER_5_TIMES  "Error!!Retry over 5 times!!"
+#define KEY_MSG_USERNAME_HAS_BEEN_USED  "This username has been used! Please choose anoter username"
+#define KEY_MSG_USERNAME_CAN_BE_USED  "You can use this username"
+#define KEY_MSG_CREATED_NEW_ACC  "New account has been created"
+#define KEY_MSG_LOGOUT  "Logout!!Goodbye!"
+#define KEY_MSG_FOUND_ITEM  "item has been found!"
+#define KEY_MSG_NOT_FOUND_ITEM  "can find this item!"
+#define KEY_MSG_FAVORITE_LIST_ALREADY_HAVE_ITEM  "Error!! Item has already added in favorite list!"
+#define KEY_MSG_SUCCESS_ADD_ITEM_TO_FAVORITE_LIST  "Successful add item to favorite list!"
+#define KEY_MSG_ERROR_WHEN_REMOVE_ITEM_FROM_FAVORITE_LIST  "Error!! Can't remove this item from favorite list"
+#define KEY_MSG_SUCCESS_REMOVE_ITEM_FROM_CART_LIST  "Successful remove item from cart list!"
+#define KEY_MSG_WRONG_ITEM_NAME  "Error!! Wrong item name!"
+#define KEY_MSG_SUCCESS_ADD_ITEM_TO_CART  "Successful add item to cart list!"
+#define KEY_MSG_ERROR_WHEN_REMOVE_ITEM_FROM_CART_LIST  "Error!! Can't remove this item from cart list!"
+#define KEY_MSG_SUCCESS  "Success"
+#define KEY_MSG_DUPLICATE_WITH_OLD_INFO  "Error!! Duplicate with old info!"
+#define KEY_MSG_FAVORITE_LIST_IS_NULL "You haven't add any item to favorite list!"
+#define KEY_MSG_CART_LIST_IS_NULL "You haven't add any item to cart list!"
+#endif

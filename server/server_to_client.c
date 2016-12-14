@@ -108,7 +108,11 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 			
 			temp = (char*)malloc(sizeof(char)*1024);
 			strcpy(temp,show_all_favorite(param1,con));
-			Send_Message(server_sock,"554");
+			if(strcmp(temp," ") == 0){
+				Send_Message(server_sock,"556");
+			} else{
+				Send_Message(server_sock,"554");
+			}
 			break;
 		}
 		case 601:{
@@ -168,7 +172,11 @@ void Excute_Request(int server_sock,char* request_code,MYSQL*con){
 			param1 = strtok(NULL,"//");
 			temp = (char*)malloc(sizeof(char)*1024);
 			strcpy(temp,show_list_cart(param1,con));
-			Send_Message(server_sock,"653");
+			if (strcmp(temp," ") == 0){
+				Send_Message(server_sock,"655");
+			} else{
+				Send_Message(server_sock,"653");
+			}
 			break;
 		}
 		case 604:{
@@ -237,69 +245,69 @@ void Send_Message(int server_sock,char* request_code){
 	strcat(request,"//");
 	switch(i){
 		case 150:{
-			strcat(request,"msg_not_match_user_name");
+			strcat(request,KEY_MSG_NOT_MATCH_USER_NAME);
 			break;
 		}
 		case 151:{
-			strcat(request,"msg_acc_currently_online");
+			strcat(request,KEY_MSG_ACC_CURRENTLY_ONLINE);
 			break;
 		}
 		case 152:{
-			strcat(request,"msg_acc_currently_offline");
+			strcat(request,KEY_MSG_ACC_CURRENTLY_OFFLINE);
 			break;
 		}
 		case 153:{
-			strcat(request,"msg_not_match_passwd");
+			strcat(request,KEY_MSG_NOT_MATCH_PASSWD);
 			break;
 		}
 		case 154:{
-			strcat(request,"msg_match_username_passwd");
+			strcat(request,KEY_MSG_MATCH_USERNAME_PASSWD);
 			break;
 		}
 		case 155:{
-			strcat(request,"msg_retry_over_5_times");
+			strcat(request,KEY_MSG_RETRY_OVER_5_TIMES);
 			break;
 		}
 		case 250:{
-			strcat(request,"msg_username_has_been_used");
+			strcat(request,KEY_MSG_USERNAME_HAS_BEEN_USED);
 			break;
 		}
 		case 251:{
-			strcat(request,"msg_username_can_be_used");
+			strcat(request,KEY_MSG_USERNAME_CAN_BE_USED);
 			break;
 		}
 		case 252:{
-			strcat(request,"msg_created_new_acc");
+			strcat(request,KEY_MSG_CREATED_NEW_ACC);
 			break;
 		}
 		case 351:{
-			strcat(request,"msg_logout");
+			strcat(request,KEY_MSG_LOGOUT);
 			break;
 		}
 		case 450:{
-			strcat(request,"msg_found_item");
+			strcat(request,KEY_MSG_FOUND_ITEM);
 			strcat(request,"//");
 			strcat(request,temp);
 			break;
 		}
 		case 451:{
-			strcat(request,"msg_not_found_item");
+			strcat(request,KEY_MSG_NOT_FOUND_ITEM);
 			break;
 		}
 		case 550:{
-			strcat(request,"msg_favorite_list_already_has_item");
+			strcat(request,KEY_MSG_FAVORITE_LIST_ALREADY_HAVE_ITEM );
 			break;
 		}
 		case 551:{
-			strcat(request,"msg_success_add_item_to_favorite_list");
+			strcat(request,KEY_MSG_SUCCESS_ADD_ITEM_TO_FAVORITE_LIST);
 			break;
 		}
 		case 552:{
-			strcat(request,"msg_error_when_remove_item_from_favorite_list");
+			strcat(request,KEY_MSG_ERROR_WHEN_REMOVE_ITEM_FROM_FAVORITE_LIST);
 			break;
 		}
 		case 553:{
-			strcat(request,"msg_success_remove_item_from_cart_list");
+			strcat(request,KEY_MSG_SUCCESS_REMOVE_ITEM_FROM_CART_LIST);
 			break;
 		}
 		case 554:{
@@ -307,19 +315,23 @@ void Send_Message(int server_sock,char* request_code){
 			break;
 		}
 		case 555:{
-			strcat(request,"msg_wrong_item_name");
+			strcat(request,KEY_MSG_WRONG_ITEM_NAME);
+			break;
+		}
+		case 556:{
+			strcat(request,KEY_MSG_FAVORITE_LIST_IS_NULL);
 			break;
 		}
 		case 650:{
-			strcat(request,"msg_success_add_item_to_cart");
+			strcat(request,KEY_MSG_SUCCESS_ADD_ITEM_TO_CART);
 			break;
 		}
 		case 651:{
-			strcat(request,"msg_success_remove_item_from_cart_list");
+			strcat(request,KEY_MSG_SUCCESS_REMOVE_ITEM_FROM_CART_LIST);
 			break;
 		}
 		case 652:{
-			strcat(request,"msg_error_when_remove_item_from_cart_list");
+			strcat(request,KEY_MSG_ERROR_WHEN_REMOVE_ITEM_FROM_CART_LIST);
 			break;
 		}
 		case 653:{
@@ -330,16 +342,20 @@ void Send_Message(int server_sock,char* request_code){
 			strcat(request,temp);
 			break;
 		}
+		case 655:{
+			strcat(request,KEY_MSG_CART_LIST_IS_NULL);
+			break;
+		}
 		case 750:{
 			strcat(request,temp);
 			break;
 		}
 		case 751:{
-			strcat(request,"msg_success");
+			strcat(request,KEY_MSG_SUCCESS);
 			break;
 		}
 		case 752:{
-			strcat(request,"msg_duplicate_with_old_info");
+			strcat(request,KEY_MSG_DUPLICATE_WITH_OLD_INFO);
 			break;
 		}
 	}
