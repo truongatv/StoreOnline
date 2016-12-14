@@ -221,16 +221,6 @@ void Show_Message(char* respond,char* result){
 			//printf("%s\n", params);
 			break;
 		}
-		case 655:{
-			msg = strtok(NULL,"//");
-			printf("%s\n", msg);
-			break;
-		}
-		case 556:{
-			msg = strtok(NULL,"//");
-			printf("%s\n", msg);
-			break;
-		}
 		case 554:{
 			params = strtok(NULL,"//");
 			printf("%s\n", params);
@@ -260,7 +250,7 @@ void Send_UserName(int client_sock,char*request_code,char* result_code){
 		printf("\nInsert userid:");
 		memset(buff,'\0',(strlen(buff)+1));
 		gets(buff);
-	}while((int)strlen(buff) == 0);
+	}while((int)strlen(buff) <=5 || (int)strlen(buff)>20);
 
 	user_name_sent = (char*)malloc(sizeof(char)*50);
 	strcpy(user_name_sent,&buff[0]);
@@ -304,7 +294,9 @@ void Send_Passwd(int client_sock,char* request_code,char* passwd,char* result_co
 		printf("\nInsert passwd:");
 		memset(buff,'\0',(strlen(buff)+1));
 		gets(buff);
-	}while((int)strlen(buff) == 0);
+
+	}while((int)strlen(buff) <=5  || strlen(buff)>10 || strstr(buff," ")!=NULL);
+
 
 
 	strcpy(passwd,&buff[0]);
@@ -346,6 +338,21 @@ void Send_Info(int client_sock,char* info_type,char* request_code,char* info,cha
 		printf("\nInsert %s:",info_type);
 		memset(buff,'\0',(strlen(buff)+1));
 		gets(buff);
+<<<<<<< HEAD
+=======
+		// if(!strcmp("email",info_type) && strstr(buff," ")!=NULL){
+		// 	goto loop;
+		// }
+		if(!strcmp("email",info_type)){
+			if(strstr(buff," ")!=NULL || strstr(buff,"@")==NULL||strlen(buff)<=5){
+				goto loop;
+			}
+		}
+		if(!strcmp("phone number",info_type)){
+			if(strspn(buff,"0123456789") != strlen(buff))
+				goto loop;
+		}
+>>>>>>> 9647cd637af44646eb0c0a33850303b9c57ed178
 	}while((int)strlen(buff) == 0);
 
 
