@@ -53,6 +53,7 @@ int create_table(MYSQL* con){
     printf("5\n");
     finish_with_error(con);
    }
+   insert_data(con);
 }
 void create_account(char* user_name,char* password,MYSQL* con){
    char statement[100];
@@ -335,7 +336,15 @@ void update_account_password(char* user_name,char* newpass,MYSQL* con){
   mysql_query(con,statement);
 }
 
-
+void insert_data(MYSQL *con){
+  insert_item("giac mo my",69000,con);
+  insert_item("quai vat ghe tham",72000,con);
+  insert_item("tivi samsung",11000000,con);
+  insert_item("iphone 7",16000000,con);
+  insert_item("iphone 6",13000000,con);
+  insert_item("chuot razer",1800000,con);
+  insert_item("ban phim",300000,con);
+}
 
 
 // void main(){
