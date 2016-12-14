@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/wait.h>
+#include "msg.h"
 
 void Excute_Request(int server_sock,char* request_code,MYSQL*con);
 void Send_Message(int server_sock,char* request_code);

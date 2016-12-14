@@ -52,13 +52,15 @@ Favorite list
 	552//msg_error_when_remove_item_from_favorite_list
 	553//msg_success_remove_item_from_favorite_list
 	554//favorite_list
-	555// wrong item name
+	555//msg_wrong_item_name
+	556//msg_null_favorite_list
 Cart list
 	650//msg_success_add_item_to_cart
 	651//msg_success_remove_item_from_cart_list
 	652//msg_error_when_remove_item_from_cart_list
 	653//cart_list
 	654//cart_list//total_cost
+	655//msg_null_cart_list
 Account
 	750//account_info
 	751//msg_success
