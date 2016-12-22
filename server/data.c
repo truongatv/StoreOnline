@@ -337,66 +337,17 @@ void update_account_password(char* user_name,char* newpass,MYSQL* con){
 }
 
 void insert_data(MYSQL *con){
-  insert_item("giac mo my",69000,con);
-  insert_item("quai vat ghe tham",72000,con);
-  insert_item("tivi samsung",11000000,con);
-  insert_item("iphone 7",16000000,con);
-  insert_item("iphone 6",13000000,con);
-  insert_item("chuot razer",1800000,con);
-  insert_item("ban phim",300000,con);
+  insert_item("Xperia XZ",499.99,con);
+  insert_item("Xperia XA Ultra",299.99,con);
+  insert_item("Xperia Z3",449.95,con);
+  insert_item("iPhone 7",700,con);
+  insert_item("iPhone 6",500,con);
+  insert_item("iPhone SE",400,con);
+  insert_item("Samsung Galaxy S7",650,con);
+  insert_item("Pixel Phone",500,con);
+  insert_item("LG K8",350,con);
+  insert_item("LG Nexus 5X",420,con);
+  insert_item("HTC Desire 530",480,con);
+  insert_item("Microsoft Lumia 950",520,con);
 }
 
-
-// void main(){
-//    MYSQL *con = mysql_init(NULL);
-//    if (con == NULL) 
-//    {
-//       fprintf(stderr, "%s\n", mysql_error(con));
-//       exit(1);
-//    } 
-//    create_database(); 
-//    if (mysql_real_connect(con, "localhost", "root", "root", "data", 0, NULL, 0) == NULL) 
-//    {
-//       finish_with_error(con);
-//    }
-//    create_table(con);
-//    create_account("linh","linh123",con);
-//    create_account("minh","minh123",con);
-//    create_account("phuc","phuc123",con);
-//    create_account("truong","truong123",con);
-//    create_account("nam","nam123",con);
-//    insert_info("minh","nguyen tri minh","ha noi","ntm@gmail.com","0123456",con);
-//    insert_info("minh","nguyen tien truong","ha noi","ntt@gmail.com","123455",con);
-//    // printf("done\n");
-//    printf("check EXISTS account: %d\n",check_exits_user_name("nam",con));
-//    delete_account("minh",con);
-//    insert_item("sach1",100,con);
-//    insert_item("sach2",200,con);
-//    insert_item("sach3",300,con);
-//    insert_cart("truong","sach1",3,con);
-//    insert_cart("minh","sach1",4,con);
-//    insert_cart("minh","sach2",4,con);
-//    // delete_item_from_cart("minh","sach1",con);
-//    printf("show list cart: %s\n",show_list_cart("minh",con) );
-//    insert_favorite("minh","sach1",con);
-//    insert_favorite("minh","sach2",con);
-//    insert_favorite("truong","sach1",con);
-//    insert_favorite("truong","sach1",con);
-//    printf("%d\n",check_status_account("linh",con));
-//    printf("%d\n",check_status_account("nam",con));
-//    updata_status("nam",1,con);
-//    printf("%d\n",check_status_account("nam",con) );
-//    printf("%s\n",search_item("sach1",con) );
-//    // delete_favorite("truong","sach1",con);
-//    printf("show all favorite: %s\n",show_all_favorite("minh",con) );
-//    printf("total cost: %d\n",get_total_cost("minh",con) );
-//    // show_all_favorite("minh",con);
-//     // insert_cart("truong","sach1",5,con);
-//    // printf("%d\n",check_exits_user_name("minh",con) );
-//    // printf("%d\n",check_exits_user_name("nam",con) );
-//    // printf("%d\n",check_password_from_user_name("minh","minh123",con) );
-//    // updata_info_account("minh","minh123","nguyen van minh","ha nam","nvm@gmail.com","1234",con);
-//    printf("%s",search_item("sach",con));
-//    mysql_close(con);
-//   exit(0);
-// }

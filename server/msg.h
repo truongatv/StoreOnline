@@ -7,7 +7,7 @@
 #define KEY_MSG_NOT_MATCH_PASSWD  "Invalid password!!!"
 #define KEY_MSG_MATCH_USERNAME_PASSWD  "Correct username and password"
 #define KEY_MSG_RETRY_OVER_5_TIMES  "Error!!Retry over 5 times!!"
-#define KEY_MSG_USERNAME_HAS_BEEN_USED  "This username has been used! Please choose anoter username"
+#define KEY_MSG_USERNAME_HAS_BEEN_USED  "This username has been used! Please choose another username"
 #define KEY_MSG_USERNAME_CAN_BE_USED  "You can use this username"
 #define KEY_MSG_CREATED_NEW_ACC  "New account has been created"
 #define KEY_MSG_LOGOUT  "Logout!!Goodbye!"

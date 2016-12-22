@@ -18,7 +18,7 @@ int main(){
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(PORT);
 	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-
+	rl_attempted_completion_function = item_name_completion;
 	if(connect(client_sock,(struct sockaddr*)&server_addr,sizeof(struct sockaddr))!=0){
 		printf("\nError!Can not connect to sever!Client exit imediately! ");
 		return 0;

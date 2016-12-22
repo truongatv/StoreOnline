@@ -59,7 +59,7 @@ Cart list
 	651//msg_success_remove_item_from_cart_list
 	652//msg_error_when_remove_item_from_cart_list
 	653//cart_list
-	654//cart_list//total_cost
+	654//total_cost
 	655//msg_null_cart_list
 Account
 	750//account_info

@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "client_to_server.c"
-
+#include <readline/readline.h>
 
 #define PORT 6550
 

@@ -1,6 +1,19 @@
 #include "client_to_server.h"
 
 char* user_name_sent;
+char* tmp;
+char* array[] ={
+	NULL,NULL,NULL,
+	NULL,NULL,NULL,
+	NULL,NULL,NULL,
+	NULL,NULL,NULL,
+	NULL,NULL,NULL,
+	NULL,NULL,NULL,
+	NULL,NULL,NULL,
+	NULL,NULL,NULL,
+	NULL,NULL,NULL,
+	NULL,NULL,NULL
+};
 
 void Send_Request(int client_sock,char* request_code,char* result_code){
 
@@ -9,8 +22,6 @@ void Send_Request(int client_sock,char* request_code,char* result_code){
 
 	char* username = (char*)malloc(sizeof(char)*50);
 	char* passwd = (char*)malloc(sizeof(char)*50);
-
-
 
 	switch(int_request_code){
 		case 101:{
@@ -197,6 +208,12 @@ void Show_Message(char* respond,char* result){
 		case 651:{
 
 		}
+		case 556:{
+			
+		}
+		case 655:{
+
+		}
 		case 652:{
 			msg = strtok(NULL,"//");
 			printf("%s\n",msg);
@@ -207,6 +224,15 @@ void Show_Message(char* respond,char* result){
 			printf("%s\n",msg);
 			params = strtok(NULL,"//");
 			printf("%s\n", params);
+			tmp = (char*)malloc(sizeof(char)*1024);
+			strcpy(tmp,params);
+			set_completion_array(tmp);
+			int i;
+			// for(i=0;i<30;i++){
+			// 	if(array[i] != NULL){
+			// 		printf("\'%s\'\n", array[i]);
+			// 	}
+			// }
 			break;
 		}
 		case 653:{
@@ -334,15 +360,11 @@ void Send_Info(int client_sock,char* info_type,char* request_code,char* info,cha
 	int bytes_sent,bytes_received;
 	char buff[1024];
 
-	do{
+	loop: do{
 		printf("\nInsert %s:",info_type);
 		memset(buff,'\0',(strlen(buff)+1));
 		gets(buff);
-<<<<<<< HEAD
-=======
-		// if(!strcmp("email",info_type) && strstr(buff," ")!=NULL){
-		// 	goto loop;
-		// }
+
 		if(!strcmp("email",info_type)){
 			if(strstr(buff," ")!=NULL || strstr(buff,"@")==NULL||strlen(buff)<=5){
 				goto loop;
@@ -352,7 +374,10 @@ void Send_Info(int client_sock,char* info_type,char* request_code,char* info,cha
 			if(strspn(buff,"0123456789") != strlen(buff))
 				goto loop;
 		}
->>>>>>> 9647cd637af44646eb0c0a33850303b9c57ed178
+		if(!strcmp("new password",info_type)){
+			if((int)strlen(buff) <=5  || strlen(buff)>10 || strstr(buff," ")!=NULL)
+				goto loop;
+		}
 	}while((int)strlen(buff) == 0);
 
 
@@ -395,11 +420,12 @@ void Send_Item(int client_sock,char* request_code,char* result_code){
 	int i;
 	do{
 		printf("\nInsert item:");
-		memset(buff,'\0',(strlen(buff)+1));
-		gets(buff);
-	}while((int)strlen(buff) == 0);
+		//memset(buff,'\0',(strlen(buff)+1));
+		// gets(buff);
+		itemName = readline("> ");
+	}while((int)strlen(itemName) == 0);
 
-	strcpy(itemName,&buff[0]);
+	//strcpy(itemName,&buff[0]);
 
 	char* request = (char*) malloc(sizeof(char)*1024);
 
@@ -445,3 +471,45 @@ void Send_Item(int client_sock,char* request_code,char* result_code){
 	strcpy(result_code,&buff[0]);	
 }
 
+void set_completion_array(char* temp){
+	char* str = (char*)malloc(sizeof(char)*1024);
+	memmove(&temp[0], &temp[1], strlen(temp));
+	int i;
+	for ( i  = 0; i< 30; i++){
+		array[i] = NULL;
+	}
+	i=1;
+	
+	array[0] = strtok(temp,":");
+	array[0][strlen(array[0]) -1] = '\0';
+	while(strtok(NULL,"\t") != NULL){
+		array[i] = strtok(NULL,":");
+		if(array[i] !=NULL){
+			array[i][strlen(array[i]) -1] = '\0';
+		}
+		//array[i][strlen(array[i]) -1] = '\0';
+		i++;
+	}
+}
+char **item_name_completion(const char *text, int start, int end){
+    rl_attempted_completion_over = 1;
+    return rl_completion_matches(text, item_name_generator);
+}
+
+char *item_name_generator(const char *text, int state){
+    static int list_index, len;
+    char *name;
+
+    if (!state) {
+        list_index = 0;
+        len = strlen(text);
+    }
+
+    while ((name = array[list_index++])) {
+        if (strncmp(name, text, len) == 0) {
+            return strdup(name);
+        }
+    }
+
+    return NULL;
+}
